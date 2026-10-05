@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Pilot Plan Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#eef1f7;--c:#fff;--t:#172033;--m:#6b7689;--b:#e3e8f0;--a:#4f6bed;--f:#f6f8fc;--hd:#111a2e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c111c;--c:#151c2b;--t:#e7ecf6;--m:#8e9bb2;--b:#263147;--a:#7c93f5;--f:#1a2335;--hd:#070b14;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c111c;--c:#151c2b;--t:#e7ecf6;--m:#8e9bb2;--b:#263147;--a:#7c93f5;--f:#1a2335;--hd:#070b14;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--t);font:13px/1.45 Inter,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;display:flex;-webkit-font-smoothing:antialiased}
+#ed{width:430px;flex:none;overflow:auto;scrollbar-width:thin;background:var(--bg);border-right:1px solid var(--b);padding:0 14px 30px}
+#ed>h1{position:sticky;top:0;z-index:5;margin:0 -14px 12px;padding:11px 14px;color:#fff;background:linear-gradient(110deg,var(--hd),#1d2a52 70%,#164e63);display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700}
+.lg{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,#4f6bed,#0ea5a4);font-size:15px}
+.ttl{flex:1;line-height:1.15}.ttl small{display:block;font-weight:500;font-size:10.5px;opacity:.7;letter-spacing:.3px}
+.acts{display:flex;gap:6px}
+#pv{flex:1;min-width:0;overflow:auto;padding:14px}
+label{display:block;color:var(--m);font-size:11px;font-weight:600;letter-spacing:.2px;margin:7px 0 3px}
+input,select{width:100%;color:var(--t);border:1px solid var(--b);background-color:var(--c);border-radius:9px;padding:5px 9px;font:inherit;min-height:33px;transition:border-color .15s,box-shadow .15s}
+select{appearance:none;-webkit-appearance:none;cursor:pointer;font-weight:500;padding-right:26px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236b7689' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
+input:hover,select:hover{border-color:color-mix(in srgb,var(--sc,var(--a)) 50%,var(--b))}
+input:focus,select:focus,button:focus-visible{outline:none;border-color:var(--sc,var(--a));box-shadow:0 0 0 3px color-mix(in srgb,var(--sc,var(--a)) 25%,transparent)}
+button{background:var(--sc,var(--a));color:#fff;border:1px solid var(--sc,var(--a));border-radius:9px;padding:5px 12px;font:inherit;font-weight:600;cursor:pointer;min-height:33px;transition:transform .12s,filter .15s,background .15s}
+button:hover{filter:brightness(1.08)}button:active{transform:scale(.97)}
+button.g,.fl{background:var(--c);color:var(--sc,var(--a));border-color:var(--b)}
+button.g:hover,.fl:hover{background:var(--f);filter:none}
+button.x{background:transparent;color:#b3402f;border-color:transparent;padding:3px 8px;min-height:26px;font-weight:500}
+button.x:hover{background:color-mix(in srgb,#b3402f 10%,transparent);filter:none}
+.ib,.pvb{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.28);min-height:30px;padding:2px 11px;backdrop-filter:blur(4px)}
+.ib:hover,.pvb:hover{background:rgba(255,255,255,.22);filter:none}
+small{color:var(--m);display:block;margin:4px 0;font-size:11.5px}
+.row{display:flex;gap:8px;align-items:flex-end}.row>*{flex:1;min-width:0}.row>.s{flex:none}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-radius:16px;color:#fff;background:linear-gradient(135deg,#1e2a52,#3b3f9e 55%,#0e7c86);box-shadow:0 10px 24px -10px rgba(59,63,158,.55)}
+.hi small{color:rgba(255,255,255,.65);font-size:10px;font-weight:700;letter-spacing:1.2px;margin:0}.hi b{display:block;font-size:15px;line-height:1.25;margin:3px 0 2px}.hi span{font-size:11.5px;opacity:.8}
+.ring{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;align-content:center;position:relative;background:conic-gradient(#5eead4 calc(var(--p)*1%),rgba(255,255,255,.2) 0)}
+.ring:before{content:'';position:absolute;inset:6px;border-radius:50%;background:#26307a}
+.ring span,.ring i{position:relative;line-height:1.1}.ring span{font-weight:800;font-size:15px}.ring i{font-style:normal;font-size:8.5px;opacity:.75}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.kpi div{position:relative;background:var(--c);color:var(--m);border:1px solid var(--b);border-radius:12px;padding:8px 4px 7px;text-align:center;font-size:10.5px;font-weight:600;box-shadow:0 1px 2px rgba(15,23,42,.05);transition:transform .15s,box-shadow .15s;overflow:hidden}
+.kpi div:before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:var(--k)}
+.kpi div:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(15,23,42,.1)}
+.kpi em{font-style:normal;font-size:13px}.kpi b{display:block;font-size:21px;line-height:1.1;color:var(--k);font-weight:800;margin:1px 0}
+.card2{margin-top:10px;background:var(--c);border:1px solid var(--b);border-radius:14px;padding:10px 12px;box-shadow:0 1px 2px rgba(15,23,42,.05)}
+.ct{font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--m);margin-bottom:6px}
+.nx{font-size:13px;font-weight:600;line-height:1.3}.nx b{display:block;color:var(--a);font-size:12px;margin-top:2px}
+.pb{height:7px;border-radius:7px;background:var(--b);margin:10px 0 4px;overflow:hidden}.pb i{display:block;height:100%;border-radius:7px;background:linear-gradient(90deg,#4f6bed,#0ea5a4);transition:width .6s}
+.pl{display:flex;justify-content:space-between;font-size:10px;color:var(--m)}.pl span:nth-child(2){color:var(--a);font-weight:700}
+.bars{display:flex;gap:6px;align-items:flex-end;height:78px;padding-top:16px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.bars u{text-decoration:none;font-size:10px;font-weight:700;color:var(--t)}.bars span{font-size:9.5px;color:var(--m);margin-top:3px}
+.bars i{width:100%;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#4f6bed,#0ea5a4);transition:height .5s,filter .15s}.bars div:hover i{filter:brightness(1.15)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chips span{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;background:var(--f);border:1px solid var(--b)}.chips i{width:8px;height:8px;border-radius:50%}
+.warn,.ok,.inf{border-radius:12px;padding:8px 12px;margin:10px 0;font-size:12px;font-weight:500}
+.warn{background:#fdeceb;color:#8a2f22;border:1px solid #f3c6c0}.ok{background:#e8f6ef;color:#216548;border:1px solid #bde0cd}.inf{background:#e9eefc;color:#2f46a3;border:1px solid #c6d1f6}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{background:#3a1d1a;color:#f0b4ab;border-color:#5c2c27}:root:not([data-theme="light"]) .ok{background:#13301f;color:#a9d6b9;border-color:#25502f}:root:not([data-theme="light"]) .inf{background:#18223f;color:#b3c3f5;border-color:#2b3b6b}}
+:root[data-theme="dark"] .warn{background:#3a1d1a;color:#f0b4ab;border-color:#5c2c27}:root[data-theme="dark"] .ok{background:#13301f;color:#a9d6b9;border-color:#25502f}:root[data-theme="dark"] .inf{background:#18223f;color:#b3c3f5;border-color:#2b3b6b}
+.warn button{margin-top:6px;--sc:#b3402f}
+.top{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.top select{flex:1;min-width:150px}
+.fl{display:inline-flex;align-items:center;margin:0;padding:5px 12px;border:1px solid var(--b);border-radius:9px;cursor:pointer;min-height:33px;font-size:13px;font-weight:600;letter-spacing:0}
+.sec{border:1px solid var(--b);border-top:3px solid var(--sc);border-radius:14px;margin:10px 0;overflow:hidden;background:var(--c);box-shadow:0 1px 3px rgba(15,23,42,.06);transition:box-shadow .2s}
+.sec[open]{box-shadow:0 8px 22px -8px rgba(15,23,42,.18)}
+.sec>.bd{padding:4px 12px 12px;animation:fd .22s ease}@keyframes fd{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:none}}
+details>summary{list-style:none;cursor:pointer}details>summary::-webkit-details-marker{display:none}
+details.sec>summary{display:flex;align-items:center;gap:10px;padding:10px 12px;font-weight:700;font-size:13.5px}
+details.sec>summary:hover{background:var(--f)}
+details.sec>summary:after{content:'›';font-size:18px;line-height:1;color:var(--m);transform:rotate(90deg);transition:transform .2s}details.sec[open]>summary:after{transform:rotate(-90deg)}
+.ic{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:color-mix(in srgb,var(--sc) 15%,var(--c));font-size:14px}.tt2{flex:1}
+.card{border:1px solid var(--b);border-radius:11px;padding:5px 10px;margin:6px 0;background:var(--f);transition:border-color .15s}.card:hover,.card[open]{border-color:color-mix(in srgb,var(--sc) 45%,var(--b))}
+.card>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:600;font-size:12.5px;padding:4px 0}
+.card>summary span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cnt{background:var(--sc);color:#fff;border-radius:10px;padding:0 8px;font-size:11px;min-width:22px;text-align:center}
+.srch{margin:8px 0 4px}
+.it{display:grid;grid-template-columns:1fr 1fr;gap:0 8px;margin-top:8px;padding:6px 10px 8px;border-left:4px solid var(--ic,var(--sc));border-radius:9px;background:color-mix(in srgb,var(--ic,var(--sc)) 9%,var(--c))}
+.it .w,.it button{grid-column:1/3}.it button{justify-self:end}
+.dpr{display:grid;grid-template-columns:1fr 104px 58px 28px;gap:4px;align-items:center;margin:3px 0;font-size:12px}.dpr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.zb{display:flex;gap:6px;align-items:center;margin-bottom:10px;position:sticky;left:0;top:0}.zb span{min-width:42px;text-align:center;color:var(--m)}.zb button{padding:3px 10px;min-height:28px}
+body.full #ed{display:none}.zb .bk{display:none}body.full .zb .bk{display:inline-block}
+#toast{position:fixed;right:18px;bottom:18px;max-width:340px;background:var(--hd);color:#fff;padding:11px 16px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,.3);font-size:12.5px;font-weight:500;opacity:0;transform:translateY(14px);transition:opacity .25s,transform .25s;pointer-events:none;z-index:50;border-left:4px solid #5eead4}
+#toast.show{opacity:1;transform:none}
+/* ===== Monitoring view ===== */
+:root{--s1:#2a78d6;--s2:#eb6834}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--s1:#3987e5;--s2:#d95926}}
+:root[data-theme="dark"]{--s1:#3987e5;--s2:#d95926}
+.mut{color:var(--m)}.empty{font-size:12px;color:var(--m);padding:6px 2px}
+.seg2{display:flex;gap:4px;background:var(--c);border:1px solid var(--b);border-radius:11px;padding:3px;margin:0 0 10px}
+.seg2 button{flex:1;background:transparent;border:0;color:var(--m);min-height:30px;border-radius:8px;font-weight:600;padding:3px 6px}
+.seg2 button.on{background:var(--a);color:#fff}.seg2 button:not(.on):hover{background:var(--f);filter:none}
+.hb2{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:2px 10px;border-radius:20px;font-style:normal;font-size:11px;font-weight:700;background:rgba(255,255,255,.15);color:#fff}.hb2:before{content:'';width:8px;height:8px;border-radius:50%;background:var(--s)}
+.dmb{display:grid;grid-template-columns:58px 1fr 38px;gap:8px;align-items:center;font-size:11.5px;margin:5px 0}.dmb span{color:var(--m);font-weight:600}.dmb>div{height:8px;border-radius:6px;background:var(--b);overflow:hidden}.dmb i{display:block;height:100%;border-radius:6px}.dmb b{text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
+.att{display:flex;align-items:center;gap:8px;font-size:12px;padding:6px 0;border-top:1px solid var(--b)}.att span:last-child{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.opn{width:100%;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:12px;font-size:11px;font-weight:700;color:var(--t);background:color-mix(in srgb,var(--s) 13%,var(--c));border:1px solid color-mix(in srgb,var(--s) 45%,var(--b));white-space:nowrap;flex:none}.chip em{font-style:normal;color:var(--s)}
+#mv{display:none;flex:1;min-width:0;height:100%}
+body.mon #ed,body.mon #pv{display:none}body.mon #mv{display:flex}
+#med{width:440px;flex:none;overflow:auto;scrollbar-width:thin;background:var(--bg);border-right:1px solid var(--b);padding:0 14px 30px}
+#med>h1{position:sticky;top:0;z-index:5;margin:0 -14px 12px;padding:11px 14px;color:#fff;background:linear-gradient(110deg,var(--hd),#1d2a52 70%,#164e63);display:flex;align-items:center;gap:10px;font-size:15px;font-weight:700}
+#mpv{flex:1;min-width:0;overflow:auto;padding:14px}#med{--sc:var(--a)}
+#med .card2 .row input{width:100%}#med .card2 .top button:first-child{flex:1}
+.fch{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 8px}.fch button{min-height:28px;padding:2px 10px;font-size:12px;font-weight:600;background:var(--c);color:var(--t);border:1px solid var(--b)}.fch button b{color:var(--m);margin-left:3px}.fch button.on{background:var(--a);color:#fff;border-color:var(--a)}.fch button.on b{color:#fff}.fch button:hover{filter:none;border-color:var(--a)}
+.ig>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;font-size:12.5px;padding:5px 0}.ig>summary span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ir{border-left:4px solid var(--k);background:color-mix(in srgb,var(--k) 7%,var(--c));border-radius:9px;padding:7px 9px;margin:7px 0}
+.ir .t1{display:flex;gap:7px;align-items:center;font-size:12.5px}.ir .lb{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ir .ty{flex:none;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:var(--c);border:1px solid var(--b);font-size:11px;font-weight:800;color:var(--k)}
+.ir .t2{font-size:11.5px;color:var(--m);margin:4px 0 0 29px}.ir .t2 b{color:var(--t)}
+.ir .t3{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 0 29px;font-size:11.5px}
+.ir .t3 label{display:flex;align-items:center;gap:5px;margin:0;font-size:11px;color:var(--m)}
+.ir input[type=date]{width:136px;min-height:28px;padding:2px 6px;font-size:12px}
+.ir .t3 button{min-height:28px;padding:2px 9px;font-size:11.5px}
+.ir .rs{margin:6px 0 0 29px;width:calc(100% - 29px);min-height:28px;font-size:12px}
+.flash{animation:fl 1.4s ease}@keyframes fl{0%,40%{box-shadow:0 0 0 3px var(--a)}100%{box-shadow:none}}
+#pop{position:fixed;z-index:90;width:380px;max-width:calc(100vw - 16px);background:var(--c);color:var(--t);border:1px solid var(--b);border-radius:14px;box-shadow:0 18px 44px rgba(0,0,0,.28);padding:10px 12px 12px;display:none}
+#pop .ph{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}
+#pop .ir{margin:8px 0}#pop .rmk{margin-top:4px}
+.chk{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--t);font-weight:500;margin:8px 0 0}.chk input{width:auto;min-height:0}
+#tip{position:fixed;z-index:80;display:none;pointer-events:none;background:var(--hd);color:#fff;font-size:12px;line-height:1.45;padding:7px 10px;border-radius:9px;box-shadow:0 10px 24px rgba(0,0,0,.28);max-width:320px}
+.gcard .hrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:2px 0 8px;font-size:11.5px}
+.hp{display:inline-flex;align-items:center;gap:6px;padding:3px 11px;border-radius:20px;font-size:12px;font-weight:700;color:var(--t);background:color-mix(in srgb,var(--s) 13%,var(--c));border:1px solid color-mix(in srgb,var(--s) 50%,var(--b))}.hp em{font-style:normal;color:var(--s)}
+.lgd3{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:var(--m);margin-bottom:2px}.lgd3 i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}.lgd3 .sd{width:0;height:10px;border-left:2px dashed #d03b3b;border-radius:0}
+.scv{width:100%;height:auto;display:block}
+.scv .gy{stroke:var(--b);stroke-width:1}.scv .gx{stroke:var(--m);stroke-width:1}.scv .ax{fill:var(--m);font-size:10px}
+.scv .lp{fill:none;stroke:var(--s1);stroke-width:2;stroke-linejoin:round}.scv .la{fill:none;stroke:var(--s2);stroke-width:2.5;stroke-linejoin:round}
+.scv .lsd{stroke:#d03b3b;stroke-width:1.5;stroke-dasharray:4 3}.scv .gapl{stroke:#d03b3b;stroke-width:2}
+.scv .dp{fill:var(--s1);stroke:var(--c);stroke-width:2}.scv .da{fill:var(--s2);stroke:var(--c);stroke-width:2}
+.scv .dl1,.scv .dl2{fill:var(--t);font-size:11px;font-weight:700}.scv .ch{stroke:var(--m);stroke-width:1}
+.gapt{font-size:12px;margin-top:2px}.vp{color:#d03b3b}.vn{color:#0ca30c}
+#tip .sw{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.sbar{display:flex;gap:2px;height:14px;border-radius:7px;overflow:hidden;margin:4px 0 8px}.sbar i{display:block;min-width:4px}
+.sleg{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+.sleg button{display:grid;grid-template-columns:10px 1fr auto 34px;gap:6px;align-items:center;background:transparent;border:0;color:var(--t);font-size:11.5px;font-weight:500;padding:3px 4px;min-height:24px;border-radius:6px;text-align:left}
+.sleg button:hover,.sleg button.on{background:var(--f);filter:none}.sleg button.on{outline:1px solid var(--a)}
+.sleg i{width:10px;height:10px;border-radius:3px}.sleg span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sleg b{font-variant-numeric:tabular-nums}.sleg em{font-style:normal;color:var(--m);text-align:right;font-variant-numeric:tabular-nums}
+/* monitoring marks on the sheet */
+.kc{cursor:pointer}.kc:hover{outline:2px solid #2a78d6;outline-offset:2px;border-radius:2px}
+.kk.mk .tg,.kk.mk s,.kk.tx,.kk.aw b{color:var(--k)}
+.kk.co .cb{border-color:var(--k)!important;box-shadow:inset 0 0 0 1.5px var(--k);background:color-mix(in srgb,var(--k) 14%,#fff)!important}.kk.co q{color:var(--k)}
+.kk.aw .al{border-top-color:var(--k)}.kk.aw .al:before{border-right-color:var(--k)}.kk.aw .al:after{border-left-color:var(--k)}
+.kk.bar{border-color:var(--k)!important;background:color-mix(in srgb,var(--k) 18%,#fff)!important}
+.mbd{display:inline-block;margin-left:4px;padding:0 4px;border-radius:3px;background:var(--k);color:#fff;font-size:11px;font-weight:800;line-height:15px;vertical-align:middle;white-space:nowrap}
+.am{position:absolute;width:0;height:0;z-index:2;font-style:normal}.am .ad{position:absolute;left:0;top:0;transform:translateX(-50%);font-size:17px;line-height:18px;color:var(--k)}.am s{position:absolute;left:10px;top:2px;text-decoration:none;font-size:12.5px;font-weight:700;white-space:nowrap;color:var(--k)}
+.abar{position:absolute;height:7px;border-radius:4px;background:var(--k);z-index:2;min-width:4px}
+.tdl{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed #d03b3b;z-index:5}.tdl b{position:absolute;top:2px;left:4px;background:#d03b3b;color:#fff;font-size:12px;padding:1px 6px;border-radius:3px;white-space:nowrap}
+.apg{display:block;margin-top:4px;font-size:12px;font-weight:700;color:var(--k)}.apg i{display:block;height:5px;border-radius:3px;background:#e3e3e3;margin-top:3px;overflow:hidden;max-width:220px}.apg i b{display:block;height:100%;background:var(--k)}
+.mst{display:block;margin-top:2px;font-size:15px;font-weight:800;color:#b3402f}
+.mft{margin-top:8px;font-size:12px}.lgr{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;padding:6px 2px;border-top:1px solid #000;border-bottom:1px solid #000}
+.lgi{display:inline-flex;align-items:center;gap:6px;font-weight:700}.lgi i{width:14px;height:14px;border:2px solid var(--k);background:color-mix(in srgb,var(--k) 18%,#fff);border-radius:2px}.lgi u{width:22px;height:7px;background:#0ca30c;border-radius:3px}.lgi s{width:0;height:14px;border-left:2px dashed #d03b3b}.lgd2{color:#0ca30c;font-size:15px}
+#ms .scv,#ms .mft{--t:#000;--m:#444;--b:#d4d4d4;--c:#fff;--f:#f3f3f3;--s1:#2a78d6;--s2:#eb6834}
+.mfg{display:grid;grid-template-columns:460px minmax(420px,.9fr) 1.4fr;gap:18px;margin-top:8px;align-items:start}.mfc>b{display:block;font-size:13px;margin-bottom:4px}.mfc table.v{width:100%}
+.mwhy{font-size:12px;color:#444;margin:0 0 6px}.mft .gapt{font-size:12.5px}.mft .lgd3{font-size:11.5px}
+.slp{display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;font-size:12px}.slp span{display:flex;align-items:center;gap:6px}.slp i{width:10px;height:10px;border-radius:2px;flex:none}
+.mfr{display:grid;grid-template-columns:auto 1fr;gap:16px;margin-top:8px;align-items:start}.mfr>div>b{display:block;font-size:13px;margin-bottom:3px}.mfr table.v{width:100%}
+@media(max-width:800px){body.mon #mv{display:block}#med{width:auto;border:0}#mpv{padding:8px}}
+/* sheet: fixed 1600px design width, identical on screen and in print */
+#sh,#ms{background:#fff;color:#000;width:1600px;padding:8px;font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;box-shadow:0 1px 8px #0003}
+.ap{display:flex;border:1px solid #000}
+.ap div{flex:1;border-right:1px solid #000;text-align:center;font-size:11.5px;font-weight:700;line-height:1.15;min-height:54px;display:flex;align-items:flex-end;justify-content:center;padding:2px 1px}
+.ap div:last-child{border-right:0}
+.apn{border:1px solid #000;border-top:0;text-align:center;font-size:20px;font-weight:800;letter-spacing:.3px;padding:4px 2px;background:#f6f6f6}
+.tt{position:relative;margin:7px 0 5px;line-height:1.25}.tt b{display:block;font-size:23px}.tt span{display:block;font-size:14.5px;font-weight:700}
+.tt .d{position:absolute;right:0;bottom:0;text-decoration:underline}
+.hd,.r{display:flex}
+.hd{border:1px solid #000;background:#e9e9e9}
+.r{height:46px;border:1px solid #000;border-top:0;border-bottom:1px solid #8a8a8a}
+#bd .r:last-of-type{border-bottom:1px solid #000}
+.c1,.c2,.c3{font-size:15px;font-weight:700;line-height:1.15;padding:2px 4px;display:flex;align-items:center;border-right:1px solid #8a8a8a;overflow:hidden}
+.hd .c1,.hd .c2,.hd .c3{font-size:15px;justify-content:center}
+.c1{width:2.2%;justify-content:center}.c2{width:15%}.c3{width:7%;justify-content:center;text-align:center}
+.tl{flex:1;position:relative;min-width:0}
+.tl .mo{display:flex;height:17px;border-bottom:1px solid #8a8a8a}
+.mo b{font-size:14px;line-height:16px;text-align:center;border-right:1px solid #000;overflow:hidden;white-space:nowrap}
+.tl .l{display:flex;height:16px;overflow:hidden}
+.tl .l i{flex:none;font-style:normal;font-weight:700;text-align:center;font-size:12.5px;line-height:15px;overflow:hidden;border-right:1px solid #8a8a8a;border-bottom:1px solid #8a8a8a}
+.tl i.we,.tl u.we{background:#c9c9c9}
+.tl u{position:absolute;top:0;bottom:0;text-decoration:none}
+.tl u.h{background:#fde5c8;opacity:.85}.tl u.gl{border-right:1px solid #8a8a8a}
+.bar{position:absolute;height:24px;border:.7px solid #444;font-size:14px;font-weight:700;display:flex;align-items:center;white-space:nowrap;padding:0 2px;z-index:2;min-width:3px}
+.mk{position:absolute;width:0;height:0;z-index:2;font-style:normal}
+.mk .tg{position:absolute;left:0;top:0;transform:translateX(-50%);font-size:30px;line-height:30px}
+.mk s{position:absolute;left:17px;top:7px;text-decoration:none;font-size:14px;line-height:17px;font-weight:700;white-space:nowrap}
+.aw{position:absolute;z-index:2}
+.aw b{position:absolute;left:0;top:0;font-size:14px;line-height:17px;white-space:nowrap}
+.aw .al{position:absolute;left:4px;right:4px;bottom:4px;border-top:1.6px solid #000}
+.aw .al:before,.aw .al:after{content:'';position:absolute;top:-5.8px;border:5px solid transparent}
+.aw .al:before{left:-6px;border-right:10px solid #000;border-left:0}.aw .al:after{right:-6px;border-left:10px solid #000;border-right:0}
+.co{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:flex-start}
+.cb{border:.7px solid #000;font-size:13px;font-weight:700;padding:1px 3px;line-height:1.15;white-space:nowrap;width:100%}
+.co.wr .cb{white-space:normal}
+.co q{font-size:17px;line-height:12px;height:12px;quotes:none;margin-left:-1px}
+.r .tl{overflow:hidden}
+.tx{position:absolute;font-size:14px;font-weight:700;line-height:1.15;text-align:center;white-space:nowrap;z-index:2}
+#bd{position:relative}#ov{position:absolute;left:24.2%;right:0;top:0;bottom:0;pointer-events:none}
+.hl{position:absolute;writing-mode:vertical-rl;font-size:14px;font-weight:700;z-index:4;text-align:center;background:#fff;border:.7px solid #000;padding:3px 1px}
+.hl.h{writing-mode:horizontal-tb;padding:2px}
+.ft{display:flex;gap:16px;margin-top:8px;align-items:flex-start;font-size:8px}
+.rm{flex:1;font:12.5px/1.45 Calibri,Carlito,Arial,sans-serif}
+table.v{border-collapse:collapse;font-size:11.5px}table.v td,table.v th{border:1px solid #000;padding:1px 4px;white-space:nowrap}table.v th{background:#e9e9e9}
+.fo{display:flex;justify-content:space-between;margin-top:6px;font-size:13px;font-weight:700}
+.c2{position:relative}
+.chk{display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--t);font-weight:500;margin:8px 0}.chk input{width:auto;min-height:0}
+@media(max-width:800px){body{display:block;height:auto}#ed{width:auto;border:0}#pv{padding:8px}}
+@media print{
+@page{size:A3 landscape;margin:6mm}
+html,body{height:auto;background:#fff;display:block}#ed,.noprint{display:none!important}
+#pv{padding:0;overflow:visible}#sh{box-shadow:none;padding:0;break-inside:avoid}
+*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+:root:root:root{--bg:#fff;--c:#fff;--t:#111;--m:#555;--b:#cfd4dc;--f:#f4f6f9;--s1:#2a78d6;--s2:#eb6834}
+body.mon #ed,body.mon #pv,body.mon #med,#toast,#tip,#pop{display:none!important}body.mon #mv{display:block!important;height:auto}body.mon #mpv{padding:0;overflow:visible}#ms{box-shadow:none;padding:0;break-inside:avoid}.kc:hover{outline:0}}
+</style></head><body>
+<div id="ed"></div>
+<div id="pv"><div class="zb noprint"><button class="g bk" onclick="full(false)">← Back to edit</button><button class="g" onclick="setZ(Z-.1)">−</button><span id="zl"></span><button class="g" onclick="setZ(Z+.1)">+</button><button class="g" onclick="setZ(1)">100%</button><button class="g" onclick="fit()">Fit width</button></div><div id="sh"></div></div>
+<div id="mv"><aside id="med"></aside><section id="mpv"><div class="zb noprint"><button class="g" onclick="setZM(ZM-.1)">−</button><span id="zlm"></span><button class="g" onclick="setZM(ZM+.1)">+</button><button class="g" onclick="setZM(1)">100%</button><button class="g" onclick="fitM()">Fit width</button></div><div id="ms"></div></section></div>
+<script>
+var SW=1600;
+const MN=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const COL={o:'#fbd9b0',g:'#b9e3b5',b:'#b8d4f0',r:'#f4b6b6',y:'#fff1a8',k:'#bdbdbd',w:'#fff'};
+const PRE=[["CKD KIT FOR PILOT/ SOP (ETA PSMC)","POD / IMD"],["UNPACKING OF PILOT KIT","MHD/QA\nTMD/SHOPS"],["SEPARATE LOCAL ORDER FOR KASHI THROUGH SAP","PO / TMD"],["LOCAL PARTS THROUGH SAP FOR PILOT/SOP","PO/ MHD"],["INSPECTION, REPORT PREPARATION & SUBMISSION OF LOCAL PARTS","PID"],["PSMC PILOT APPROVAL","SMC/QA"],["CHECKAI MEETING","WELD/PAINT/VFA"],["MEASUREMENT","PID"],["WB ON","WELD"],["WB OK","WELD"],["PB ON","PAINT"],["PB OK","PAINT"],["EG ON","ENGINE"],["EG OK","ENGINE"],["PLASTIC","PLASTIC"],["AB ON","VFA"],["AB OK","VFA"],["FC ON","VID"],["FC OK","VID"],["PRE SDR/DQR","QA"],["SQR/DQR/COLOR MATCHING","QA"],["BODY INTERNAL GAP VERIFICATION","Weld"],["DISPATCH TO SMC (BY SEA)","IMD/TMD"],["NOISE & EMISSION TESTING","TMD/IMD"],["SOP & DELIVERY APPROVAL","SMC/QA"]];
+const D=x=>'2026-'+x;
+const mk=(n,it)=>({n:PRE[n][0],r:PRE[n][1],items:it.map(([t,s,e,l,p,c])=>({t,s:D(s),e:e?D(e):'',l:l||'',p:p||'m',c:c||(t=='c'?'w':'o')}))});
+const G=(a,b,c)=>[['t',a,'','C 7'],['t',b,'','C 1|C 2'],['t',c,'','C 5|C 3|C 4|C 6']];
+const W2=(a,b,c)=>[['t',a,'','C 7|C 1|C 2'],['t',b,'','C 5|C 3|C 4|C 6']];
+const CC={GJC:'Jungle Green(Body) / Super Black (Roof)',GJB:'Ice Grayish Blue (Body) / Super Black (Roof)',F2R:'White (Body)/Super Black (Roof)',FRF:'Silky Silver (Body)/Super Black (Roof)','26U':'White',ED:'Electro Deposition','-':'-'};
+const V=(a,c,o,w)=>({a,v:'YTBN1CXNP42',c,o,w,p:w,t:w});
+const SAMPLE0=()=>({
+ title:"YTB ADAS PILOT/SOP DAYWISE SCHEDULE",dept:"TECHNICAL MANAGEMENT DEPARTMENT",div:"PRODUCT DEVELOPMENT & LOCALIZATION DIVISION",rev:"Revision:01",date:"23-July-2026",
+ from:"2026-05-01",to:"2026-11-04",df:"2026-07-15",dt:"2026-08-31",foot:"TMD-01-011|REV-00|JUNE-22",
+ appr:"SEC.HEAD (TMD),HOD (TMD),HOD (LPD),M1J (PD & L),DIV.HEAD (PD & L),M1J (PROC),DIV.HEAD (PROC),HOD (PE),M1J (PE),DIV.HEAD (PE),M1 (PROD),M1 (PROD),DIV.HEAD (PROD),DIV.HEAD (PP&MM),M1J (PID),M1J (QA),DIV.HEAD (QA),M2 (MARKETING),DIV.HEAD (MARKETING),M1 (MKTG. & SALES),DIV.HEAD (SALES),FUNC.HEAD (MKTG. & SALES),FUNC.HEAD (SC),DMD",
+ acts:[
+ mk(0,[['c','05-04','06-05','ETA KHI Port KASHI TRIAL PART SIM & SMC','t'],['c','06-09','06-24','ETA KHI Port PILOT KIT SIM & SMC','t'],['c','05-25','06-20','ETD PILOT KIT SIM & SMC','b'],['c','06-27','07-10','ETA PSMC FOR KASHI TRIAL PART SIM & SMC','t'],['c','07-23','08-05','ETA PSMC PILOT KIT SIM & SMC','t','y']]),
+ mk(1,[['c','06-10','06-18','KASHI PARTS','t'],['a','06-04','06-22','','b'],['a','07-28','08-03','PILOT PARTS','m']]),
+ mk(2,[['a','06-01','06-08','ORDER (KASHI)','m'],['a','06-09','06-24','RECEIVING (KASHI)','m']]),
+ mk(3,[['a','06-08','06-15','ORDER (PILOT PARTS)','m'],['a','06-16','07-07','RECEIVING (PILOT PARTS)','m']]),
+ mk(4,[['c','06-26','07-08','SUBMISSION OF PILOT DOC TO SMC BY QA','t'],['a','06-26','07-08','','b']]),
+ mk(5,[['a','07-08','07-14','SMC PILOT APPROVAL','m'],['m','07-15','','','m']]),
+ mk(6,[['c','07-18','07-23',"Done 23-July'26",'t'],['t','07-24','','C 7|(WB)'],['t','07-26','','C 7|(PB)'],['t','08-10','','C 7|(AB)']]),
+ mk(7,[['c','07-14','07-22',"Measurements Completed 22-July'26",'t'],['t','07-24','','C 7'],['t','07-27','','C 7']]),
+ mk(8,[['c','07-08','07-21',"KASHI TRIAL (08-JULY'26 ~ 21-JULY'26)",'t'],['a','07-08','07-21','','b'],['t','07-22','','WB 13|WB 14'],['t','07-24','','C 7'],['t','07-28','','C 1|C 2'],['t','08-04','','C 5|C 3|C 4|C 6']]),
+ mk(9,[['c','07-20','07-25',"Done 23-July'26",'t'],['t','07-18','','WB 13|WB 14'],['t','07-23','','C 7','b'],['t','07-27','','C 1|C 2'],['t','08-04','','C 5|C 3|C 4|C 6']]),
+ mk(10,[['t','07-08','','ED only'],['t','07-18','','WB 13|WB 14'],['c','07-20','07-25',"Done 23-July'26",'t'],['t','07-24','','C 7','b'],['t','07-27','','C 1|C 2'],['t','08-05','','C 5|C 3|C 4|C 6']]),
+ mk(11,G('07-27','07-31','08-06')),mk(12,G('07-22','07-29','08-05')),mk(13,G('07-22','07-29','08-05')),mk(14,G('07-22','07-29','08-05')),
+ mk(15,true?[['t','08-04','','C 7|C 1|C 2'],['t','08-10','','C 5|C 3|C 4|C 6'],['c','09-03','09-30','SOP AB ON (03-SEP-2026 Tentative)','m']]:[]),
+ mk(16,[['t','08-06','','C 7|C 1|C 2'],['t','08-12','','C 5|C 3|C 4|C 6']]),
+ mk(17,[['t','08-06','','C 7|C 1|C 2'],['t','08-12','','C 5|C 3|C 4|C 6']]),
+ mk(18,[['t','08-06','','C 7|C 1|C 2'],['t','08-12','','C 5|C 3|C 4|C 6']]),
+ mk(19,[['t','08-12','','C 1|C 2|C 5']]),
+ mk(20,[]),
+ mk(21,[['c','08-12','08-24','BODY INTERNAL GAP VERIFICATION','t'],['a','08-12','08-24','','b']]),
+ mk(22,[['c','08-17','08-23','HANDED OVER TO IMD','t'],['t','08-24','','C 1'],['c','08-26','09-01','ETD PSMC','t'],['c','09-02','09-12','ETD KHI PORT (SEA) (02-09-2026)','t'],['t','09-02','','C 1','b'],['c','10-05','10-14','ETA JAPAN PORT','t'],['t','10-07','','C 1','b']]),
+ mk(23,[['c','06-10','07-08','YTB Non-ADAS (CXJ) Pilot COP results are OK; therefore, YTB ADAS (CXN) Pilot will follow CXJ COP results,','m']]),
+ mk(24,[['c','08-24','09-05','SUBMISSION OF SOP DOC TO SMC BY QA','b'],['c','09-07','09-22','SOP APPROVAL FROM SMC','m'],['c','10-12','10-26','SUBMISSION OF DELIVERY APPROVAL DOC TO SMC BY QA','t'],['c','10-27','11-04','DELIVERY APPROVAL FROM SMC','m']])
+ ],
+ hol:[{s:"2026-08-14",e:"2026-08-14",l:"INDEPENDENCE DAY"},{s:"2026-08-17",e:"2026-08-21",l:"SHUTDOWN 17 - 21 AUG'26"},{s:"2026-08-26",e:"2026-08-26",l:"EID MILAD-UN-NABI (P.B.U.H)"}],
+ rem:["PE & WELD SHOP IS RESPONSIBLE FOR PILOT KASHI SCHEDULE.","SOP (AB ON) WILL BE 03-SEP'26 (Tentative)","QA AND CONCERN SHOP ARE RESPONSIBLE TO MEASURE WEIGHT AS PER QTY TABLE","ENGINE AND CHASSIS NUMBERS WILL BE PROVIDED BY PRODUCTION CONTROL","AS INFORMED BY IMD, BY SEA FIRM SHIPMENT CAN BE CONFIRMED 15 DAYS EARLIER WITH CONFIRMED BOOKING AT SHIPPING LINE.","COMP 07 IS TRIAL VEHICLE AS REQUIRED BY QA, QA requested to remove its Pre SQR.","SQR/DQR WILL BE DONE IN COMP 1, 2 & 5 ON 12-AUG'26.","REASON OF REVISION, DUE TO DELAY IN ACTIVITIES PERTAINING TO CLEARANCE OF PILOT KIT.","C7, C1 & C2 WHITE BODIES ASSEMBLE USING REMAINING KASHI PARTS."],
+ veh:[V('COMP 01','GJC','SMC','O'),V('COMP 02','GJB','PSMC','O'),V('COMP 03','GJB','PSMC','O'),V('COMP 04','F2R','PSMC','X'),V('COMP 05','FRF','PSMC','X'),V('COMP 06','GJC','PSMC','X'),V('COMP 07','26U','PSMC','X'),...[8,9,10,11,12].map(n=>V('W/B '+String(n).padStart(2,'0'),'-','PSMC (Kashi)','')),V('W/B 13','ED','PSMC (PE)',''),V('W/B 14','ED','PSMC (PE)','')],
+ ship:{t:"YTB ADAS VEHICLE SHIPMENT SCHEDULE (BY SEA)",r:[["ETD PSMC (COMP 01)","2026-08-21","2026-08-27","2026-10-05","SEA"]]}
+});
+var MSG='';
+function dd(a,b){return Math.round((Date.parse(a+'T00:00:00Z')-Date.parse(b+'T00:00:00Z'))/864e5)}
+function mn(a){const d=a.items.map(x=>x.s).filter(Boolean).sort();return d[0]||null}
+function mx(a){const d=a.items.map(x=>x.e||x.s).filter(Boolean).sort();return d[d.length-1]||null}
+function addDep(s,sn,pn,m){m=m||'s';const a=s.acts.find(x=>x.n==sn),p=s.acts.find(x=>x.n==pn);if(!a||!p||a===p)return;a.dep=a.dep||[];if(a.dep.some(d=>d.n==pn))return;const s0=mn(a),e0=m=='e'?mx(p):mn(p);a.dep.push({n:pn,m,lag:s0&&e0?dd(s0,e0):0})}
+const DEPS=[[0,1],[1,8],[2,3],[3,4],[4,5],[5,8],[8,9],[9,10],[10,11],[11,12],[12,13],[13,14],[14,15],[15,16],[16,17],[17,18],[18,19],[19,21],[21,22],[22,24]];
+const SAMPLE=()=>{const s=SAMPLE0();DEPS.forEach(([a,b])=>addDep(s,PRE[b][0],PRE[a][0]));s.acts.forEach(a=>a.items.forEach(x=>{x.b={s:x.s,e:x.e||''}}));s.bl={d:'2026-07-23',r:'Revision:01'};s.mv=3;return s};
+let S;try{S=JSON.parse(localStorage.getItem('plan5'))}catch(e){}
+S=S||SAMPLE();if(S.memo===undefined)S.memo='Approvals obtained through Smart Memo';
+const U=s=>Date.parse(s+'T00:00:00Z'),DAY=864e5;
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sv=()=>{try{localStorage.setItem('plan5',JSON.stringify(S))}catch(e){}};
+
+function RP0(tg,MO){
+ tg=tg||sh;const SWX=MO?SWM:SW,TT=MO?SD():'';tg.style.width=SWX+'px';
+ const F0=U(S.from),T0=U(S.to),d0=U(S.df),d1=U(S.dt),cells=[];
+ const WW=+S.ww||2,WS=S.ws==null?1:+S.ws,push=(s,n,k)=>cells.push({s,n,k,w:k=='d'?1:WW*n/7});
+ const wk0=(a,b)=>{for(let t=a;t<b;){let e=t+DAY;while(e<b&&new Date(e).getUTCDay()!=WS)e+=DAY;e=Math.min(e,b);push(t,(e-t)/DAY,'w');t=e}};
+ wk0(F0,Math.min(d0,T0+DAY));
+ for(let t=Math.max(F0,d0);t<=Math.min(T0,d1);t+=DAY)push(t,1,'d');
+ wk0(Math.max(d1+DAY,F0),T0+DAY);
+ let tot=0;cells.forEach(c=>{c.x=tot;tot+=c.w});
+ const X=m=>{for(const c of cells)if(m>=c.s&&m<c.s+c.n*DAY)return(c.x+(m-c.s)/DAY/c.n*c.w)/tot*100;return m<cells[0].s?0:100};
+ let mo=[],cur='',r1='',r2='',wk='',gl='',wc=0;
+ cells.forEach(c=>{const d=new Date(c.s),k=d.getUTCMonth()+'-'+d.getUTCFullYear(),w=c.w/tot*100,wd=d.getUTCDay(),we=c.k=='d'&&(wd==0||wd==6);
+  if(k!=cur){mo.push([MN[d.getUTCMonth()]+"'"+String(d.getUTCFullYear()).slice(2),0]);cur=k;wc=0}
+  mo[mo.length-1][1]+=w;
+  r1+=`<i class="${we?'we':''}" style="width:${w}%">${c.k=='d'?d.getUTCDate():++wc}</i>`;
+  r2+=`<i class="${we?'we':''}" style="width:${w}%">${c.k=='d'?['S','M','T','W','T','F','S'][wd]:(S.wl=='date'?d.getUTCDate()+'/'+(d.getUTCMonth()+1):'WK')}</i>`;
+  gl+=`<u class="gl" style="left:${c.x/tot*100}%;width:${w}%"></u>`;
+  if(we)wk+=`<u class="we" style="left:${c.x/tot*100}%;width:${w}%"></u>`});
+ const hol=S.hol.filter(h=>h.s&&U(h.s)<=T0&&U(h.e||h.s)>=F0);
+ const hr=h=>{const a=X(Math.max(U(h.s),F0)),b=X(Math.min(U(h.e||h.s),T0)+DAY);return[a,b-a]};
+ const hs=hol.map(h=>{const[a,w]=hr(h);return `<u class="h" style="left:${a}%;width:${w}%"></u>`}).join('');
+ const hl=hol.map(h=>{const[a,w]=hr(h),lg=w>4;return lg?`<div class="hl h" style="left:${a}%;width:${w}%;top:@H@px">${E(h.l)}</div>`:`<div class="hl" style="left:${a}%;top:@V@px">${E(h.l)}</div>`}).join('');
+ const TW=(SWX-16)*.756,CW=.58,HT=[];
+ const mt=(s,f)=>Math.max(0,...String(s||'').split('|').map(t=>t.length))*f*CW;
+ const rows=S.acts.map((a,i)=>{
+  const bx=[];
+  (MO?monItems(a,i,TT):a.items).forEach(x=>{
+   if(!x.s)return;const sT=U(x.s),eT=U(x.e||x.s);if(sT>T0||eT<F0)return;
+   const l=X(Math.max(sT,F0)),w=Math.max(X(Math.min(eT,T0)+DAY)-l,.3),L=l/100*TW,Wd=w/100*TW,n=String(x.l||'').split('|').length,tw=mt(x._lw||x.l,x.t=='c'?13:x.t=='t'?14:14),dw=X(Math.max(sT,F0)+DAY)-l,o={x,l,w,qm:Math.max(0,dw/100*TW/2-6),lab:E(x.l).replace(/\|/g,'<br>')};
+   if(x.t=='c'){const bw=x.e?Wd:tw+8,ln=x.e?Math.max(n,Math.ceil(tw/Math.max(bw-8,10))):n;o.x0=L;o.x1=L+bw;o.h=ln*15+4+16}
+   else if(x.t=='t'){o.x0=L+Wd/2-tw/2-1;o.x1=L+Wd/2+tw/2+1;o.h=n*16.4}
+   else if(x.t=='a'){o.x0=L;o.x1=Math.max(L+Wd,L+tw);o.h=(x.l?17:0)+12}
+   else if(x.t=='m'){const cx=L+Wd/2;o.x0=cx-16;o.x1=cx+22+tw;o.h=32}
+   else if(x.t=='am'){const cx=L+Wd/2;o.x0=cx-9;o.x1=cx+14+tw;o.h=20}
+   else if(x.t=='ab'){o.x0=L;o.x1=L+Wd;o.h=9}
+   else{o.x0=L;o.x1=Math.max(L+Wd,L+tw+5);o.h=24}
+   bx.push(o)});
+  bx.sort((p,q)=>p.x0-q.x0);
+  let rh=72,done=false;
+  for(let t=0;t<40&&!done;t++){const pl=[];done=true;
+   for(const o of bx){
+    const pref=o.x.p=='t'?2:o.x.p=='b'?rh-o.h-2:Math.round((rh-o.h)/2),ys=[pref];for(let y=2;y<=rh-o.h-1;y++)ys.push(y);
+    const y=ys.find(y=>y>=1&&y+o.h<=rh-1&&pl.every(q=>q.x1+2<=o.x0||o.x1+2<=q.x0||q.y+q.h+1<=y||y+o.h+1<=q.y));
+    if(y===undefined){rh+=6;done=false;break}
+    o.y=y;pl.push(o)}}
+  HT.push(rh);
+  const it=bx.map(o=>{const x=o.x,l=o.l,w=o.w,y=o.y,K=MO&&x._k,kk=K&&x._k!='pend'&&x._k!='na',at=K?` onclick="edItem(${i},${x._j},event)" title="Click to update the actual date"`:'',cl=K?' kc'+(kk?' kk':''):'',ks=kk?`--k:${KC[x._k]};`:'',lab=o.lab+(K&&x._b?`<span class="mbd" style="--k:${KC[x._k]}">${x._b}</span>`:'');
+   if(x.t=='am')return `<em class="am kc"${at} style="--k:${KC[x._k]};left:${l+w/2}%;top:${y}px"><span class="ad">◆</span><s>${lab}</s></em>`;
+   if(x.t=='ab')return `<span class="abar kc"${at} style="--k:${KC[x._k]};left:${l}%;width:${w}%;top:${y}px"></span>`;
+   if(x.t=='a')return `<div class="aw${cl}"${at} style="${ks}left:${l}%;width:${w}%;top:${y}px;height:${o.h}px"><b>${lab}</b><span class="al"></span></div>`;
+   if(x.t=='m')return `<em class="mk${cl}"${at} style="${ks}left:${l+w/2}%;top:${y}px"><span class="tg">▲</span><s>${lab}</s></em>`;
+   if(x.t=='c')return `<div class="co ${x.e?'wr':''}${cl}"${at} style="${ks}left:${l}%;${x.e?`width:${w}%;`:''}top:${y}px"><div class="cb" style="background:${COL[x.c]||'#fff'}">${lab}</div><q style="margin-left:${o.qm}px">▲</q></div>`;
+   if(x.t=='t')return `<div class="tx${cl}"${at} style="${ks}left:${l+w/2}%;top:${y}px;transform:translateX(-50%)">${lab}</div>`;
+   return `<span class="bar${cl}"${at} style="${ks}left:${l}%;width:${w}%;background:${COL[x.c]||COL.o};top:${y}px">${lab}</span>`}).join('');
+  return `<div class="r" style="height:${rh}px"><div class="c1">${i+1}</div><div class="c2">${MO?actCell(a,TT):E(a.n)}</div><div class="c3" style="white-space:pre-line">${E(a.r)}</div><div class="tl">${wk}${hs}${gl}${it}</div></div>`}).join('');
+ const tdl=MO&&TT>=S.from&&TT<=S.to?`<div class="tdl" style="left:${(X(U(TT))+X(U(TT)+DAY))/2}%"><b>STATUS ${fdt(TT)}</b></div>`:'';
+ const tv=HT.slice(0,6).reduce((a,b)=>a+b,0)+2,th=HT.slice(0,9).reduce((a,b)=>a+b,0)+4;
+ const ap=S.appr.split(',').map(s=>`<div>${E(s.trim())}</div>`).join('');
+ const M3=m=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m],fd=s=>{if(!s)return'';const d=new Date(s+'T00:00:00Z');return String(d.getUTCDate()).padStart(2,'0')+'-'+M3(d.getUTCMonth())+'-'+String(d.getUTCFullYear()).slice(2)};
+ const vt=(wt)=>`<table class="v"><tr><th>S.No</th><th>Assy Type</th><th>Version</th><th>Color Code</th><th>Color</th><th>Owner</th>${wt?'<th>White Body Weight</th><th>Paint Body Weight</th><th>Complete Vehicle Weight</th>':''}</tr>${S.veh.map((v,i)=>[v,i]).filter(([v])=>(v.w!=='')==wt).map(([v,i])=>`<tr><td>${i+1}</td><td>${E(v.a)}</td><td>${E(v.v)}</td><td>${E(v.c)}</td><td>${E(CC[v.c]||'')}</td><td>${E(v.o)}</td>${wt?`<td>${E(v.w)}</td><td>${E(v.p)}</td><td>${E(v.t)}</td>`:''}</tr>`).join('')}</table>`;
+ const st=`<b style="font-size:12.5px">${E(S.ship.t)}</b><table class="v"><tr><th>DESCRIPTION</th><th>ETD PSMC</th><th>ETD PORT</th><th>ETA JAPAN</th><th>MODE</th></tr>${S.ship.r.map(r=>`<tr><td>${E(r[0])}</td><td>${fd(r[1])}</td><td>${fd(r[2])}</td><td>${fd(r[3])}</td><td>${E(r[4])}</td></tr>`).join('')}</table>`;
+ tg.innerHTML=`${MO?'':`<div class="ap">${ap}</div>${S.memo?`<div class="apn">${E(S.memo)}</div>`:''}`}
+ <div class="tt"><b>${E(S.title)}</b>${MO?`<span class="mst">PLANNED VS ACTUAL MONITORING · STATUS AS OF ${fdt(TT).toUpperCase()} · BASELINE ${E((S.bl&&S.bl.r)||'')}</span>`:''}<span>${E(S.dept)}</span><span>${E(S.div)}</span><span>${E(S.rev)}</span><span class="d">DATE: ${E(S.date)}</span></div>
+ <div class="hd"><div class="c1">S.NO</div><div class="c2">ACTIVITIES</div><div class="c3">RESPONSIBLE</div>
+ <div class="tl"><div class="mo">${mo.map(m=>`<b style="width:${m[1]}%">${m[0]}</b>`).join('')}</div><div class="l">${r1}</div><div class="l">${r2}</div></div></div>
+ <div id="bd">${rows}<div id="ov">${hl.replace(/@V@/g,tv).replace(/@H@/g,th)}${tdl}</div></div>
+ ${MO?monFoot(TT):`<div class="ft"><div class="rm"><b>REMARKS:</b>${S.rem.map((r,i)=>`<div>${i+1}. ${E(r)}</div>`).join('')}</div>${vt(true)}${vt(false)}<div>${st}</div></div>`}
+ <div class="fo">${S.foot.split('|').map(x=>`<span>${E(x)}</span>`).join('')}</div>`;
+ sv()}
+
+function RP(){
+ for(let k=0;k<4;k++){RP0();const z=sh.style.zoom;sh.style.zoom=1;const H=sh.offsetHeight;sh.style.zoom=z;const n=Math.max(1600,Math.round(H*1.43));if(Math.abs(n-SW)<20||k==3)break;SW=n}
+ sv();if(window.fitCb)window.fitCb()}
+const F=(k,l,t)=>`<label>${l}</label><input ${t?`type="${t}"`:''} value="${E(S[k])}" oninput="S.${k}=this.value;RP()">`;
+const OP=(o,v)=>Object.entries(o).map(([k,l])=>`<option value="${k}" ${v==k?'selected':''}>${l}</option>`).join('');
+const LBLS=[...new Set(SAMPLE().acts.flatMap(a=>a.items.map(x=>x.l)).concat(['C 1','C 2','C 3','C 4','C 5','C 6','C 7']).filter(Boolean))];
+const RESP=[...new Set(PRE.map(q=>q[1]))],NAMES=PRE.map(q=>q[0]),REMS=SAMPLE().rem;
+const HOLS=['INDEPENDENCE DAY',"SHUTDOWN 17 - 21 AUG'26",'EID MILAD-UN-NABI (P.B.U.H)','HOLIDAY'];
+const REVS=Array.from({length:10},(_,i)=>'Revision:0'+i),NO=n=>String(n).padStart(2,'0');
+const ASSY=[1,2,3,4,5,6,7].map(n=>'COMP '+NO(n)).concat([8,9,10,11,12,13,14].map(n=>'W/B '+NO(n))),OWN=['SMC','PSMC','PSMC (Kashi)','PSMC (PE)'],DESC=[1,2,3,4,5,6,7].map(n=>'ETD PSMC (COMP '+NO(n)+')');
+const MON=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const TPL=[['Arrow ↔ (order / receiving)','a','m','o',''],['Callout box ▲','c','t','w',''],['Triangle ▲','m','m','o',''],['Bar','b','m','o',''],['Text: C 7','t','m','o','C 7'],['Text: C 1 / C 2','t','m','o','C 1|C 2'],['Text: C 5 / C 3 / C 4 / C 6','t','m','o','C 5|C 3|C 4|C 6'],['Text: C 7 / C 1 / C 2','t','m','o','C 7|C 1|C 2'],['Text: C 1 / C 2 / C 5','t','m','o','C 1|C 2|C 5'],['Text: WB 13 / WB 14','t','m','o','WB 13|WB 14'],['Text: ED only','t','m','o','ED only']];
+const iso=d=>d.toISOString().slice(0,10),addD=(s,n)=>iso(new Date(U(s)+n*DAY)),fmtD=v=>{if(!v)return S.date;const[y,m,d]=v.split('-');return `${+d}-${MON[+m-1]}-${y}`};
+const gp=p=>{let o=S;for(const k of p.split('.'))o=o[k];return o};
+const sp=(p,v)=>{const k=p.split('.');let o=S;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v};
+const SL=(list,cur,path,lf)=>{const l=(cur===''||cur==null||list.includes(cur))?list:[cur].concat(list);return `<select onchange="pick(this,'${path}')"><option value="">— select —</option>${l.map(v=>`<option value="${E(v)}" ${v===cur?'selected':''}>${lf?E(lf(v)):E(v).replace(/\|/g,' / ')}</option>`).join('')}<option value="__e">✎ Edit / other…</option></select>`};
+function keep(f){if(f!==true)MSG='';const st=ed.scrollTop;RE();ed.scrollTop=st;RP()}
+function cascade(){const moved=new Set();for(let k=0;k<40;k++){let ch=false;
+ S.acts.forEach(a=>(a.dep||[]).forEach(d=>{const p=S.acts.find(x=>x.n==d.n);if(!p)return;const e=d.m=='e'?mx(p):mn(p),m=mn(a);if(!e||!m)return;const sh=dd(addD(e,d.lag),m);
+  if(sh>0){a.items.forEach(x=>{if(x.s)x.s=addD(x.s,sh);if(x.e)x.e=addD(x.e,sh)});moved.add(a.n);ch=true}}));
+ if(!ch)break}return[...moved]}
+function layoutQ(v){if(!v)return;if(v=='w'){S.df=addD(S.to,1);S.dt=addD(S.to,1)}else if(v=='d'){S.df=S.from;S.dt=S.to}else{const d=[];S.acts.forEach(a=>a.items.forEach(x=>{if(x.s)d.push(x.s);if(x.e)d.push(x.e)}));d.sort();if(d.length){S.df=d[0];S.dt=d[d.length-1]}}keep()}
+function ext(){const d=[];S.acts.forEach(a=>a.items.forEach(x=>{if(x.s)d.push(x.s);if(x.e)d.push(x.e)}));d.sort();if(d.length){if(d[d.length-1]>S.to)S.to=addD(d[d.length-1],7);if(d[0]<S.from)S.from=addD(d[0],-7)}}
+function afterEdit(i){const a=S.acts[i];(a.dep||[]).forEach(d=>{const p=S.acts.find(x=>x.n==d.n),s0=mn(a),e0=p&&(d.m=='e'?mx(p):mn(p));if(s0&&e0)d.lag=dd(s0,e0)});
+ const m=cascade();ext();MSG=m.length?`🔗 ${m.length} related activities moved forward: ${m.slice(0,5).join(', ')}${m.length>5?'…':''}`:'';if(m.length)toast(MSG);keep(true)}
+function anc(n,seen){seen=seen||new Set();if(seen.has(n))return seen;seen.add(n);const a=S.acts.find(x=>x.n==n);((a&&a.dep)||[]).forEach(d=>anc(d.n,seen));return seen}
+function addDepUI(i,v){if(v==='')return;const a=S.acts[i],p=S.acts[+v];if(anc(p.n).has(a.n)){alert('This would create a circular dependency (A→B→A). Please choose a different activity.');keep();return}addDep(S,a.n,p.n);keep()}
+function setLag(i,k,v){S.acts[i].dep[k].lag=parseInt(v)||0;const m=cascade();ext();MSG=m.length?`🔗 ${m.length} related activities moved forward`:'';keep(true)}
+function setMode(i,k,m){const a=S.acts[i],d=a.dep[k],p=S.acts.find(x=>x.n==d.n);d.m=m;const s0=mn(a),e0=p&&(m=='e'?mx(p):mn(p));if(s0&&e0)d.lag=dd(s0,e0);keep()}
+function pick(el,path){let v=el.value;if(v=='__e'){v=prompt('Edit text (use | for a new line):',gp(path));if(v===null){RE();return}}
+ sp(path,v);if(/^acts\.\d+\.n$/.test(path)){const m=PRE.find(q=>q[0]==v);if(m)sp(path.replace(/\.n$/,'.r'),m[1])}keep()}
+function addI(i,k){if(k==='')return;const t=TPL[+k];S.acts[i].items.push({t:t[1],p:t[2],c:t[3],l:t[4],s:S.df,e:''});keep()}
+function addR(k){if(k==='')return;const t=k=='-1'?prompt('New remark:'):REMS[+k];if(t)S.rem.push(t);keep()}
+function shipD(i,v){const r=S.ship.r[i];r[1]=v;r[2]=addD(v,6);r[3]=addD(v,45);keep()}
+function shiftAll(n){if(!n)return;const f=x=>x?addD(x,n):x;S.acts.forEach(a=>a.items.forEach(x=>{x.s=f(x.s);x.e=f(x.e)}));S.hol.forEach(x=>{x.s=f(x.s);x.e=f(x.e)});keep()}
+function fillAll(){PRE.forEach(q=>{if(!S.acts.some(a=>a.n==q[0]))S.acts.push({n:q[0],r:q[1],items:[]})});keep()}
+function fitTL(){const d=[];S.acts.forEach(a=>a.items.forEach(x=>{if(x.s)d.push(x.s);if(x.e)d.push(x.e)}));S.hol.forEach(x=>{if(x.s)d.push(x.s);if(x.e)d.push(x.e)});if(!d.length)return;d.sort();S.from=addD(d[0],-7);S.to=addD(d[d.length-1],7);keep();fit()}
+function fixAll(){S.acts.forEach(a=>a.items.forEach(x=>{if(x.s&&x.e&&U(x.e)<U(x.s))[x.s,x.e]=[x.e,x.s]}));if(U(S.dt)<U(S.df))[S.df,S.dt]=[S.dt,S.df];if(U(S.to)<U(S.from))[S.from,S.to]=[S.to,S.from];keep()}
+function validate(){const w=[],F0=U(S.from),T0=U(S.to);S.acts.forEach((a,i)=>a.items.forEach(x=>{const id=`#${i+1} ${a.n.slice(0,24)}`;if(!x.s)w.push(id+': start date missing');else{if(x.e&&U(x.e)<U(x.s))w.push(id+': end is before start');if(U(x.s)>T0||U(x.e||x.s)<F0)w.push(id+': outside the timeline (use Fit timeline)')}if(!x.l&&x.t!='m'&&x.t!='a')w.push(id+': text missing')}));if(U(S.dt)<U(S.df))w.push('Daily range ends before it starts');if(F0>T0)w.push('Timeline ends before it starts');return w}
+function exp(){saveFile('plan.json',JSON.stringify(S),'application/json')}
+function imp(el){const f=el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{S=JSON.parse(r.result);mig();RE();RP()}catch(e){alert('This is not a valid plan file.')}};r.readAsText(f)}
+const ICO={7:'📊',1:'⚙️',2:'📋',3:'🗓️',4:'📝',5:'🚗',6:'🚢'};
+const OPN=new Set(['2']),OPA=new Set();
+function fmtShort(s){return +s.slice(8)+' '+MON[+s.slice(5,7)-1].slice(0,3)}
+function DASH(w,ni,wk){
+ const td=iso(new Date()),T=SD(),M=ISUM(T),tot=Math.max(1,dd(S.to,S.from)),pct=Math.max(0,Math.min(100,Math.round(dd(td,S.from)/tot*100)));
+ const all=[];S.acts.forEach(a=>a.items.forEach(x=>{if(x.s)all.push({s:x.s,l:x.l||a.n,t:x.t})}));all.sort((p,q)=>p.s<q.s?-1:1);
+ const nx=all.find(x=>x.s>=td),dn=nx?dd(nx.s,td):0;
+ const nxt=nx?`${E(nx.l.replace(/\|/g,' '))}<b>${dn==0?'Today':dn==1?'Tomorrow':'In '+dn+' days'} · ${fmtShort(nx.s)}</b>`:'No upcoming items';
+ const mon={};all.forEach(x=>{const k=x.s.slice(0,7);mon[k]=(mon[k]||0)+1});
+ const ks=Object.keys(mon).sort(),mx2=Math.max(1,...Object.values(mon));
+ const K=[['acts',S.acts.length,'Activities','📋','#4f6bed'],['dn',M.done,'Items done','✅','#0ca30c'],['od',M.c.od,'Overdue','⛔',M.c.od?'#d03b3b':'#8a94a6'],['iss',w.length,'Issues',w.length?'⚠️':'✔️',w.length?'#b3402f':'#0ea5a4']];
+ return `<div class="hero"><div class="hi"><small>CURRENT PLAN</small><b>${E(S.title)}</b><span>${E(S.rev)} · ${E(S.date)}</span><br><em class="hb2" style="--s:${HL[M.h][1]}">${HL[M.h][0]} · on-time ${M.adh}%</em></div><div class="ring" style="--p:${M.pc}"><span>${M.pc}%</span><i>items done</i></div></div>
+ <div class="kpi">${K.map(k=>`<div style="--k:${k[4]}"><em>${k[3]}</em><b data-k="${k[0]}" data-v="${k[1]}">${k[1]}</b>${k[2]}</div>`).join('')}</div>
+ <div class="card2"><div class="ct">Planned vs actual · as of ${fmtShort(T)}</div>
+ <div class="dmb"><span>Planned</span><div><i style="width:${M.plannedPc}%;background:var(--s1)"></i></div><b>${M.plannedPc}%</b></div>
+ <div class="dmb"><span>Actual</span><div><i style="width:${M.pc}%;background:var(--s2)"></i></div><b>${M.pc}%</b></div>
+ ${M.noAct?'<small>No actual dates entered yet. Open Monitoring to update.</small>':M.dl.length?M.dl.slice(0,3).map(o=>`<div class="att">${schip(o.r.k,o.r.v)}<span title="${E(o.a.n)}">${E(o.a.n)} · ${E((o.x.l||TYN[o.x.t]).replace(/\|/g,' / '))}</span></div>`).join(''):'<small>✓ Nothing overdue or late.</small>'}
+ <button class="opn" onclick="setView(1)">📊 Open Monitoring</button></div>
+ <div class="card2"><div class="ct">Next milestone</div><div class="nx">${nxt}</div><div class="pb"><i style="width:${pct}%"></i></div><div class="pl"><span>${fmtShort(S.from)}</span><span>Today ${fmtShort(td)} · ${pct}% of timeline</span><span>${fmtShort(S.to)}</span></div></div>
+ <div class="card2"><div class="ct">Items per month</div><div class="bars">${ks.map(k=>`<div title="${MON[+k.slice(5)-1]}: ${mon[k]} items"><u>${mon[k]}</u><i style="height:${Math.round(mon[k]/mx2*40)+3}px"></i><span>${MON[+k.slice(5)-1].slice(0,3)}</span></div>`).join('')}</div></div>`}
+const PV={};
+function anim(){document.querySelectorAll('#ed .kpi b[data-v]').forEach(b=>{const k=b.dataset.k,to=+b.dataset.v,fr=PV[k]==null?0:PV[k];PV[k]=to;if(fr===to){b.textContent=to;return}const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/450);b.textContent=Math.round(fr+(to-fr)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(t0)})}
+function toast(m){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';document.body.appendChild(t)}t.textContent=m;t.className='show';clearTimeout(t._h);t._h=setTimeout(()=>{t.className=''},3400)}
+function theme(){const d=document.documentElement,c=d.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'),n=c=='dark'?'light':'dark';d.setAttribute('data-theme',n);try{localStorage.setItem('theme',n)}catch(e){}}
+function flt(v){v=v.toLowerCase();document.querySelectorAll('#ed .card[data-n]').forEach(c=>{c.style.display=c.dataset.n.includes(v)?'':'none'})}
+const SEC=(c,k,t,b)=>`<details class="sec" style="--sc:${c}" ${OPN.has(k)?'open':''} ontoggle="this.open?OPN.add('${k}'):OPN.delete('${k}')"><summary><span class="ic">${ICO[k]}</span><span class="tt2">${t.replace(/^\d · /,'')}</span></summary><div class="bd">${b}</div></details>`;
+function RE(){RE0();anim()}
+function RE0(){
+ const A0=S.df>S.from?S.df:S.from,B0=S.dt<S.to?S.dt:S.to,nd=B0>=A0?dd(B0,A0)+1:0,wkd=Math.max(0,Math.round((dd(S.to,S.from)+1-nd)/7));
+ const w=validate(),ni=S.acts.reduce((n,a)=>n+a.items.length,0),wk=Math.max(0,Math.round((U(S.to)-U(S.from))/DAY/7));
+ ed.innerHTML=`<h1><span class="lg">▦</span><span class="ttl">Plan Generator<small>Pilot / SOP Gantt</small></span><span class="acts"><button class="ib" title="Toggle light / dark" onclick="theme()">◐</button><button class="pvb" onclick="full(true)">👁 Preview</button></span></h1>
+ <nav class="seg2" aria-label="View"><button class="on" aria-current="page">📄 Plan sheet</button><button onclick="setView(1)">📊 Monitoring</button></nav>
+ ${DASH(w,ni,wk)}
+ ${w.length?`<div class="warn"><b>⚠ ${w.length} issue(s)</b>${w.slice(0,6).map(m=>`<div>• ${E(m)}</div>`).join('')}<button onclick="fixAll()">Auto-fix dates</button></div>`:'<div class="ok">✓ No issues found. The plan is ready to export as PDF.</div>'}
+ ${MSG?`<div class="inf">${E(MSG)}</div>`:''}
+ <div class="top"><button onclick="window.print()">⬇ Save as PDF</button><button class="g" onclick="fitTL()">Fit timeline</button><button class="g" onclick="fillAll()">+ All 25 activities</button>
+ <select onchange="shiftAll(+this.value)"><option value="">⇄ Shift all dates…</option>${[-14,-7,-1,1,7,14].map(d=>`<option value="${d}">${d>0?'+':''}${d} days</option>`).join('')}</select>
+ <button class="g" onclick="exp()">Export</button><label class="fl">Import<input type="file" accept=".json" onchange="imp(this)" hidden></label><button class="g" onclick="if(confirm('Reset to sample plan?')){S=SAMPLE();RE();RP();if(document.body.classList.contains('mon')){MV();RPM()}}">Reset</button></div>
+
+ ${SEC('#4f6bed','1','1 · Header',`${F('title','Plan title')}${F('dept','Department')}${F('div','Division')}
+ <div class="row"><div><label>Revision</label>${SL(REVS,S.rev,'rev')}</div><div><label>Date</label><input type="date" oninput="S.date=fmtD(this.value);RP()"></div><button class="g s" onclick="S.date=fmtD(iso(new Date()));keep()">Today</button></div><small>Current: ${E(S.date)}</small>
+ <div class="row"><div>${F('from','Timeline start','date')}</div><div>${F('to','Timeline end','date')}</div></div>
+ <div class="row"><div>${F('df','Daily columns from','date')}</div><div>${F('dt','Daily columns to','date')}</div></div>
+ <div class="row"><div><label>Daily columns (days)</label><input type="number" min="0" value="${nd}" onchange="S.dt=addD(S.df,Math.max(0,(parseInt(this.value)||1)-1));keep()"></div><div><label>Weekly column width</label><select onchange="S.ww=+this.value;keep()">${OP({'1.5':'Compact','2':'Normal','3':'Wide','4':'Extra wide'},String(S.ww||2))}</select></div></div>
+ <div class="row"><div><label>Week label shows</label><select onchange="S.wl=this.value;keep()">${OP({wk:'1 WK, 2 WK…',date:'Week start date'},S.wl||'wk')}</select></div><div><label>Week starts on</label><select onchange="S.ws=+this.value;keep()">${OP({1:'Monday',0:'Sunday',6:'Saturday'},String(S.ws==null?1:S.ws))}</select></div></div>
+ <div class="top"><select onchange="layoutQ(this.value)"><option value="">⚡ Quick layout…</option><option value="w">All weekly</option><option value="d">All daily</option><option value="i">Daily only where items are</option></select></div>
+ <small>Chart: ${wkd} weekly + ${nd} daily columns</small>
+ <label>Approval note (printed under approval boxes)</label>${SL(['Approvals obtained through Smart Memo','Approved through Smart Memo'],S.memo,'memo')}${F('appr','Approval boxes (comma separated)')}${F('foot','Footer (left|centre|right)')}`)}
+ ${SEC('#0ea5a4','2','2 · Activities',`<div class="row"><select id="np"><option value="-1">Custom activity</option>${PRE.map((q,i)=>`<option value="${i}">${E(q[0])}</option>`).join('')}</select><button class="s" onclick="addA()">Add</button></div>
+ ${S.acts.length>6?'<input class="srch" placeholder="🔍 Search activities…" oninput="flt(this.value)">':''}
+ ${S.acts.map((a,i)=>`<details class="card" data-n="${E(a.n.toLowerCase())}" ${OPA.has(i)?'open':''} ontoggle="this.open?OPA.add(${i}):OPA.delete(${i})"><summary><span>#${i+1} ${E(a.n)}</span><span class="cnt">${a.items.length}</span></summary><label>Activity</label>${SL(NAMES,a.n,`acts.${i}.n`)}<label>Responsible</label>${SL(RESP,a.r,`acts.${i}.r`)}
+  <label>Depends on (must come first) · gap in days</label>
+  ${(a.dep||[]).map((d,k)=>`<div class="dpr"><span>${E(d.n)}</span><select onchange="setMode(${i},${k},this.value)">${OP({s:'Start→Start',e:'End→Start'},d.m||'s')}</select><input type="number" value="${d.lag}" onchange="setLag(${i},${k},this.value)"><button class="x" onclick="S.acts[${i}].dep.splice(${k},1);keep()">✕</button></div>`).join('')}
+  <select onchange="addDepUI(${i},this.value)"><option value="">+ Depends on activity…</option>${S.acts.map((q,n)=>n==i?'':`<option value="${n}">${E(q.n.slice(0,50))}</option>`).join('')}</select>
+  ${a.items.map((x,j)=>{const p=`S.acts[${i}].items[${j}]`;return `<div class="it" style="--ic:${x.c=='w'?'#94a3b8':COL[x.c]||'#fbd9b0'}">
+  <div><label>Start</label><input type="date" value="${x.s}" oninput="${p}.s=this.value;RP()" onchange="afterEdit(${i})"></div>
+  <div><label>End (optional)</label><input type="date" value="${x.e}" oninput="${p}.e=this.value;RP()" onchange="afterEdit(${i})"></div>
+  <div class="w"><label>Text</label>${SL(LBLS,x.l,`acts.${i}.items.${j}.l`)}</div>
+  <div><label>Type</label><select onchange="${p}.t=this.value;RP()">${OP({b:'Bar',a:'Arrow ↔',m:'Triangle ▲',c:'Callout box ▲',t:'Text (C 1, C 7…)'},x.t)}</select></div>
+  <div><label>Position in row</label><select onchange="${p}.p=this.value;RP()">${OP({t:'Top',m:'Middle',b:'Bottom'},x.p)}</select></div>
+  <div class="w"><label>Colour</label><select onchange="${p}.c=this.value;keep()">${OP({o:'Orange',g:'Green',b:'Blue',r:'Red',y:'Yellow',k:'Grey',w:'White'},x.c)}</select></div>
+  <button class="x" onclick="S.acts[${i}].items.splice(${j},1);keep()">Remove</button></div>`}).join('')}
+  <div class="top" style="margin-top:10px"><select onchange="addI(${i},this.value)"><option value="">+ Add arrow / box / triangle / text…</option>${TPL.map((t,k)=>`<option value="${k}">${t[0]}</option>`).join('')}</select>
+  <button class="g" onclick="mv(${i},-1)">↑</button><button class="g" onclick="mv(${i},1)">↓</button><button class="x" onclick="S.acts.splice(${i},1);keep()">Delete</button></div></details>`).join('')}`)}
+ ${SEC('#d97706','3','3 · Holidays / shutdowns',`${S.hol.map((h,i)=>`<div class="card"><label>Label</label>${SL(HOLS,h.l,`hol.${i}.l`)}
+  <div class="row"><div><label>From</label><input type="date" value="${h.s}" oninput="S.hol[${i}].s=this.value;RP()"></div><div><label>To</label><input type="date" value="${h.e}" oninput="S.hol[${i}].e=this.value;RP()"></div>
+  <button class="x s" onclick="S.hol.splice(${i},1);keep()">✕</button></div></div>`).join('')}<button class="g" onclick="S.hol.push({s:S.from,e:S.from,l:'HOLIDAY'});keep()">+ Holiday / shutdown</button>`)}
+ ${SEC('#8b5cf6','4','4 · Remarks',`${S.rem.map((r,i)=>`<label>Remark ${i+1}</label><div class="row">${SL(REMS,r,`rem.${i}`)}<button class="x s" onclick="S.rem.splice(${i},1);keep()">✕</button></div>`).join('')}
+ <div class="top"><select onchange="addR(this.value)"><option value="">+ Add remark…</option>${REMS.map((t,k)=>`<option value="${k}">${E(t.slice(0,60))}</option>`).join('')}<option value="-1">✎ Write new…</option></select></div>`)}
+ ${SEC('#10b981','5','5 · Vehicle &amp; colour tables',`<small>Select a colour code and the colour name fills in automatically.</small>${S.veh.map((v,i)=>`<div class="it" style="--ic:${v.w!==''?'#10b981':'#94a3b8'}"><div class="w"><label>#${i+1} Assy type</label>${SL(ASSY,v.a,`veh.${i}.a`)}</div>
+  <div><label>Version</label>${SL(['YTBN1CXNP42'],v.v,`veh.${i}.v`)}</div><div><label>Owner</label>${SL(OWN,v.o,`veh.${i}.o`)}</div>
+  <div class="w"><label>Colour code</label>${SL(Object.keys(CC),v.c,`veh.${i}.c`,k=>k+' — '+CC[k])}</div>
+  ${v.w!==''?['w','p','t'].map((k,n)=>`<div${n==2?' class="w"':''}><label>${['White body','Paint body','Complete vehicle'][n]} weight</label>${SL(['O','X'],v[k],`veh.${i}.${k}`)}</div>`).join(''):''}
+  <button class="x" onclick="S.veh.splice(${i},1);keep()">Remove</button></div>`).join('')}
+  <div class="top"><button class="g" onclick="S.veh.push({a:'COMP 08',v:'YTBN1CXNP42',c:'GJC',o:'PSMC',w:'X',p:'X',t:'X'});keep()">+ Vehicle (with weights)</button><button class="g" onclick="S.veh.push({a:'W/B 15',v:'YTBN1CXNP42',c:'-',o:'PSMC (Kashi)',w:'',p:'',t:''});keep()">+ W/B body</button></div>`)}
+ ${SEC('#ec4899','6','6 · Shipment schedule',`<label>Table title</label>${SL(['YTB ADAS VEHICLE SHIPMENT SCHEDULE (BY SEA)'],S.ship.t,'ship.t')}
+ ${S.ship.r.map((r,i)=>`<div class="it"><div class="w"><label>Description</label>${SL(DESC,r[0],`ship.r.${i}.0`)}</div>
+  <div><label>ETD PSMC</label><input type="date" value="${r[1]}" onchange="shipD(${i},this.value)"></div><div><label>Mode</label>${SL(['SEA','AIR'],r[4],`ship.r.${i}.4`)}</div>
+  <div><label>ETD Port (auto +6 days)</label><input type="date" value="${r[2]}" oninput="S.ship.r[${i}][2]=this.value;RP()"></div><div><label>ETA Japan (auto +45 days)</label><input type="date" value="${r[3]}" oninput="S.ship.r[${i}][3]=this.value;RP()"></div>
+  <button class="x" onclick="S.ship.r.splice(${i},1);keep()">Remove</button></div>`).join('')}
+ <div class="top"><button class="g" onclick="S.ship.r.push(['ETD PSMC (COMP 02)',S.df,addD(S.df,6),addD(S.df,45),'SEA']);keep()">+ Shipment row</button></div>`)}`}
+function addA(){const i=+document.getElementById('np').value;S.acts.push(i<0?{n:'NEW ACTIVITY',r:'',items:[]}:{n:PRE[i][0],r:PRE[i][1],items:[]});RE();RP();ed.scrollTop=ed.scrollHeight}
+function mv(i,d){const j=i+d;if(j<0||j>=S.acts.length)return;[S.acts[i],S.acts[j]]=[S.acts[j],S.acts[i]];RE();RP()}
+/* ===== Monitoring: planned vs actual for every plan item (triangle, arrow, box, text, bar) ===== */
+const KC={ok:'#0ca30c',late:'#e0752d',od:'#d03b3b',ls:'#c98500',prog:'#2a78d6',due:'#2a78d6',pend:'#000',na:'#000',np:'#000'};
+const KU=Object.assign({},KC,{pend:'#8a94a6',na:'#a0a8b5',np:'#a0a8b5'});
+const KL={ok:'Done on time',late:'Done late',od:'Overdue',ls:'Late start',prog:'In progress',due:'Due this week',pend:'Upcoming',na:'Not tracked',np:'No date'};
+const KI={ok:'✓',late:'✓',od:'!',ls:'⏱',prog:'▶',due:'◷',pend:'○',na:'–',np:'–'};
+const TYN={m:'Triangle',a:'Arrow',c:'Callout box',t:'Text',b:'Bar'},TYI={m:'▲',a:'↔',c:'▭',t:'T',b:'▬'};
+const HL={g:['On track','#0ca30c','●'],a:['At risk','#c98500','▲'],r:['Behind schedule','#d03b3b','■']};
+const REASONS=['Supplier / parts delay','Shipment / customs delay','Approval pending (SMC / QA)','Quality issue / rework','Manpower / resource','Design / spec change','Previous activity delayed','Shutdown / holiday','Other'];
+const mxd=(a,b)=>a>b?a:b,mnd=(a,b)=>a<b?a:b,PRI=['od','ls','late','prog','due','pend','ok'];
+let SWM=1600,ZM=1,autoM=true,PI=null;const MF={k:'todo',q:''},OPM=new Set(),CLM=new Set();
+function SD(){return S.sd||iso(new Date())}
+function fdt(s){if(!s)return '—';const d=new Date(U(s));return String(d.getUTCDate()).padStart(2,'0')+'-'+MON[d.getUTCMonth()].slice(0,3)+'-'+String(d.getUTCFullYear()).slice(2)}
+function mig(){if(S.mv===3)return;S.acts.forEach(a=>{['b','as','af','pc','rs','rm'].forEach(k=>delete a[k]);a.items.forEach(x=>{if(!(x.b&&x.b.s))x.b={s:x.s,e:x.e||''}})});if(!S.bl)S.bl={d:iso(new Date()),r:S.rev};S.mv=3;delete S.sp;delete S.km}
+const RNG=x=>x.t=='a'||x.t=='b';
+function ibase(x){return S.cmp=='cur'||!(x.b&&x.b.s)?{s:x.s,e:x.e||''}:{s:x.b.s,e:x.b.e||''}}
+/* status of one item at status date T */
+function ist(x,T){const B=ibase(x);if(!B.s)return{k:'np',v:0};if(x.nt)return{k:'na',v:0,P0:B.s,P1:B.e||B.s};
+ const P0=B.s,rng=RNG(x)&&!!B.e&&B.e>B.s,P1=rng?B.e:B.s,o={P0,P1,rng};
+ if(!rng){if(x.as){const v=dd(x.as,P0);return{...o,k:v>0?'late':'ok',v,done:1}}
+  if(T>P0)return{...o,k:'od',v:dd(T,P0)};return{...o,k:dd(P0,T)<=7?'due':'pend',v:0}}
+ if(x.af){const v=dd(x.af,P1);return{...o,k:v>0?'late':'ok',v,done:1}}
+ if(T>P1)return{...o,k:'od',v:dd(T,P1)};
+ if(x.as)return{...o,k:'prog',v:0};
+ if(T>P0)return{...o,k:'ls',v:dd(T,P0)};
+ return{...o,k:dd(P0,T)<=7?'due':'pend',v:0}}
+function actR(a,T){const rs=a.items.map(x=>ist(x,T)).filter(r=>r.k!='np'&&r.k!='na'),n=rs.length,dn=rs.filter(r=>r.done).length;let k='pend';
+ if(n&&dn==n)k=rs.some(r=>r.k=='late')?'late':'ok';else for(const p of PRI)if(rs.some(r=>r.k==p)){k=p;break}
+ return{n,dn,k,pc:n?Math.round(dn/n*100):0}}
+function ISUM(T){const L=[];S.acts.forEach((a,i)=>a.items.forEach((x,j)=>{const r=ist(x,T);if(r.k!='np'&&r.k!='na')L.push({a,i,x,j,r})}));
+ const c={ok:0,late:0,od:0,ls:0,prog:0,due:0,pend:0};L.forEach(o=>c[o.r.k]++);
+ const dueL=L.filter(o=>o.r.P1<=T),done=c.ok+c.late,pc=L.length?Math.round(done/L.length*100):0,plannedPc=L.length?Math.round(dueL.length/L.length*100):0;
+ const adh=dueL.length?Math.round(dueL.filter(o=>o.r.k=='ok').length/dueL.length*100):100;
+ const h=c.od>=3||adh<80?'r':c.od||c.ls||adh<95?'a':'g',why=[];if(c.od)why.push(c.od+' overdue');if(c.ls)why.push(c.ls+' late start');why.push('on-time '+adh+'%');if(c.late)why.push(c.late+' done late');
+ const dl=L.filter(o=>['od','late','ls'].includes(o.r.k)).sort((p,q)=>(q.r.k=='od')-(p.r.k=='od')||q.r.v-p.r.v);
+ const nx=L.filter(o=>!o.r.done&&o.r.P0>=T&&dd(o.r.P0,T)<=7).sort((p,q)=>p.r.P0<q.r.P0?-1:1);
+ return{L,c,due:dueL.length,done,pc,plannedPc,adh,h,why,dl,nx,noAct:!L.some(o=>o.x.as)}}
+const schip=(k,v)=>`<span class="chip" style="--s:${KU[k]}"><em>${KI[k]}</em>${KL[k]}${v>0&&k!='prog'?` +${v}d`:v<0?` −${-v}d`:''}</span>`;
+const BADGE=r=>r.k=='ok'?(r.v<0?`✓ −${-r.v}d`:'✓'):r.k=='late'?`✓ +${r.v}d`:r.k=='od'?`! +${r.v}d`:r.k=='ls'?`⏱ +${r.v}d`:r.k=='prog'?'▶':r.k=='due'?'◷':'';
+const ilab=x=>x.l?E(x.l).replace(/\|/g,' / '):`<span class="mut">(${TYN[x.t]||'Item'}, no text)</span>`;
+/* items as drawn on the monitoring sheet: planned position + actual markers */
+function monItems(a,i,T){const out=[];a.items.forEach((x,j)=>{const B=ibase(x);if(!B.s)return;const r=ist(x,T),b=x.nt?'':BADGE(r);
+ const d=Object.assign({},x,{s:B.s,e:B.e,_k:r.k,_j:j,_b:b});d._lw=(x.l||'')+(b?'  '+b:'');out.push(d);
+ if(x.nt)return;
+ if(!r.rng&&x.as&&x.as!=B.s)out.push({t:'am',s:x.as,e:'',l:'Actual '+fmtShort(x.as),p:x.p,_k:r.k,_j:j,_lw:'Actual 00 Mmm'});
+ if(r.rng&&x.as){const e=x.af||(SD()>x.as?SD():x.as);out.push({t:'ab',s:x.as,e,l:'',p:'b',_k:r.k,_j:j})}});return out}
+function actCell(a,T){const R=actR(a,T);if(!R.n)return E(a.n);return `<div>${E(a.n)}<span class="apg" style="--k:${KU[R.k]}">${R.dn}/${R.n} done · ${KL[R.k]}<i><b style="width:${R.pc}%"></b></i></span></div>`}
+function monFoot(T){const M=ISUM(T),c=M.c,N=M.L.length||1,ord=['ok','late','od','ls','prog','due','pend'];
+ const lg=['ok','late','od','ls','prog','due'].map(k=>`<span class="lgi" style="--k:${KC[k]}"><i></i>${KL[k]}</span>`).join('')+`<span class="lgi"><i style="--k:#000;background:#fff"></i>Upcoming (as planned)</span><span class="lgi"><b class="lgd2">◆</b>Actual date</span><span class="lgi"><u></u>Actual duration</span><span class="lgi"><s></s>Status date</span>`;
+ const sb=`<div class="sbar">${ord.map(k=>c[k]?`<i style="flex:${c[k]};background:${KU[k]}"></i>`:'').join('')}</div><div class="slp">${ord.map(k=>`<span><i style="background:${KU[k]}"></i>${KL[k]} <b>${c[k]}</b> (${Math.round(c[k]/N*100)}%)</span>`).join('')}</div>`;
+ const sm=`<table class="v"><tr><th>Total items</th><th>Should be done</th><th>Done</th><th>On time</th><th>Late</th><th>Overdue</th><th>Due 7 days</th><th>Completion</th><th>On-time</th></tr><tr><td>${M.L.length}</td><td>${M.due} (${M.plannedPc}%)</td><td>${M.done}</td><td>${c.ok}</td><td>${c.late}</td><td>${c.od}</td><td>${M.nx.length}</td><td>${M.pc}%</td><td>${M.adh}%</td></tr></table>`;
+ const dl=M.dl.slice(0,14);
+ const dt=`<table class="v"><tr><th>#</th><th>Activity</th><th>Item</th><th>Planned</th><th>Actual</th><th>Status</th><th>Delay</th><th>Reason / remark</th></tr>${dl.length?dl.map(o=>`<tr><td>${o.i+1}</td><td>${E(o.a.n)}</td><td>${E((o.x.l||TYN[o.x.t]).replace(/\|/g,' / '))}</td><td>${fdt(o.r.P0)}${o.r.rng?' → '+fdt(o.r.P1):''}</td><td>${o.x.as?fdt(o.x.as):'—'}${o.r.rng&&o.x.af?' → '+fdt(o.x.af):''}</td><td style="color:${KC[o.r.k]};font-weight:700">${KL[o.r.k]}</td><td>+${o.r.v}d</td><td>${E([o.x.rs,o.x.rm].filter(Boolean).join(' · '))}</td></tr>`).join(''):'<tr><td colspan="8">No delayed items</td></tr>'}</table>`;
+ return `<div class="mft"><div class="lgr"><b>LEGEND:</b>${lg}</div><div class="mfg">
+ <div class="mfc"><b>PROGRESS: PLANNED VS DONE (ITEMS)</b>${TREND(M,T,1)}</div>
+ <div class="mfc"><b>CURRENT STATUS: <span style="color:${HL[M.h][1]}">${HL[M.h][2]} ${HL[M.h][0].toUpperCase()}</span></b><div class="mwhy">${M.why.join(' · ')}</div>${sb}<div style="margin-top:8px">${sm}</div></div>
+ <div class="mfc"><b>DELAYED ITEMS</b>${dt}</div></div></div>`}
+function RPM(){const ms=document.getElementById('ms');if(!ms)return;for(let k=0;k<4;k++){RP0(ms,1);const z=ms.style.zoom;ms.style.zoom=1;const H=ms.offsetHeight;ms.style.zoom=z;const n=Math.max(1600,Math.round(H*1.43));if(!H||Math.abs(n-SWM)<20||k==3)break;SWM=n}if(autoM)fitM()}
+function setZM(z,a){autoM=!!a;ZM=Math.max(.2,Math.min(2,z));const ms=document.getElementById('ms');if(ms)ms.style.zoom=ZM;const l=document.getElementById('zlm');if(l)l.textContent=Math.round(ZM*100)+'%'}
+function fitM(){const p=document.getElementById('mpv');if(!p||!p.clientWidth)return;setZM(Math.min(1,(p.clientWidth-28)/SWM),true)}
+/* editing actual dates */
+function setA(i,j,f,v){const x=S.acts[i].items[j],T=SD(),B=ibase(x),rng=RNG(x)&&!!B.e&&B.e>B.s;
+ if(f=='plan'){x.as=B.s;if(rng)x.af=B.e}
+ else if(f=='today'){if(rng){if(!x.as)x.as=mnd(B.s,T);x.af=T}else x.as=T}
+ else if(f=='start'){x.as=T}
+ else if(f=='clr'){x.as='';x.af='';x.rs=''}
+ else if(f=='as'){x.as=v;if(!v)x.af='';else if(x.af&&x.af<v)x.af=v}
+ else if(f=='af'){x.af=v;if(v&&!x.as)x.as=B.s<=v?B.s:v;if(v&&x.as>v)x.as=v}
+ else x[f]=v;
+ sv();MREF(i,j);if((x.as&&x.as>T)||(x.af&&x.af>T))toast('Note: this actual date is after the status date ('+fdt(T)+').')}
+function MREF(i,j){MV();RPM();const p=document.getElementById('pop');if(p&&p.style.display=='block'&&PI)p.innerHTML=popHTML(PI[0],PI[1])}
+function mFill(){const T=SD();let n=0;S.acts.forEach(a=>a.items.forEach(x=>{if(x.nt||x.as||x.af)return;const B=ibase(x);if(!B.s)return;const rng=RNG(x)&&!!B.e&&B.e>B.s;
+ if(rng){if(B.e<=T){x.as=B.s;x.af=B.e;n++}else if(B.s<=T){x.as=B.s;n++}}else if(B.s<=T){x.as=B.s;n++}}));sv();MV();RPM();
+ toast(n?`${n} items marked done on their planned dates up to ${fdt(T)}. Now change only the ones that were late.`:'Nothing to fill: every item due by the status date already has an actual date.')}
+function mBase(m){if(!m)return;if(m=='all'&&!confirm('Save the current plan dates as the new baseline for ALL items? Delays will then be measured from these dates.'))return;
+ let n=0;S.acts.forEach(a=>a.items.forEach(x=>{if(!x.s)return;if(m=='all'||!(x.b&&x.b.s)){x.b={s:x.s,e:x.e||''};n++}}));if(m=='all')S.bl={d:iso(new Date()),r:S.rev};sv();MV();RPM();
+ toast(n?`Baseline saved for ${n} item${n==1?'':'s'}.`:'Every item already has a baseline.')}
+function mClear(){if(!confirm('Clear all actual dates and reasons?'))return;S.acts.forEach(a=>a.items.forEach(x=>{x.as='';x.af='';x.rs='';x.rm=''}));sv();MV();RPM()}
+function setView(m){document.body.classList.toggle('mon',!!m);try{localStorage.setItem('view',m?'1':'0')}catch(e){}closePop();if(m){MV();RPM();fitM()}else{keep();fit()}}
+async function saveFile(name,data,type){
+ try{if(window.claude&&typeof claude.use=='function'){const d=await claude.use('downloads');if(d){try{await d.save({filename:name,data});toast('Saved '+name)}catch(e){if(!e||e.code!='declined')toast('Could not save the file here ('+((e&&e.code)||'unavailable')+').')}return}}}catch(e){}
+ try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove()}catch(e){toast('Download is not available in this view.')}}
+function mCsv(){const T=SD(),q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+ const H=['S.No','Activity','Responsible','Item type','Item text','Planned start / date','Planned finish','Actual start / date','Actual finish','Status','Delay (days)','Reason','Remark'];
+ const L=[];S.acts.forEach((a,i)=>a.items.forEach(x=>{const r=ist(x,T),B=ibase(x);L.push([i+1,a.n,(a.r||'').replace(/\n/g,' / '),TYN[x.t]||x.t,(x.l||'').replace(/\|/g,' / '),B.s||'',r.rng?B.e:'',x.as||'',r.rng?(x.af||''):'',KL[r.k],r.v>0?r.v:r.v<0?r.v:0,x.rs||'',x.rm||''].map(q).join(','))}));
+ const M=ISUM(T),meta=[['Report','Planned vs Actual (item level)'],['Plan',S.title],['Status date',T],['Baseline',S.bl?S.bl.r+' saved '+S.bl.d:''],['Completion %',M.pc],['On-time %',M.adh],['Overdue items',M.c.od]].map(x=>x.map(q).join(','));
+ saveFile(`plan-vs-actual-${T}.csv`,'﻿'+meta.join('\r\n')+'\r\n\r\n'+[H.map(q).join(',')].concat(L).join('\r\n'),'text/csv')}
+/* item editor row (used in the panel and in the click popup) */
+function itemRow(a,i,x,j,T,pop){const r=ist(x,T),B=ibase(x),k=r.k;if(k=='np')return '';
+ const pl=r.rng?`${fdt(B.s)} → ${fdt(B.e)}`:fdt(B.s),rev=S.cmp!='cur'&&x.b&&x.b.s&&(x.s!=x.b.s)?` <span class="mut">(revised plan ${fdt(x.s)})</span>`:'';
+ const inp=x.nt?'<span class="mut">Not monitored (info only)</span>':r.rng?`<label>Start<input type="date" value="${x.as||''}" onchange="setA(${i},${j},'as',this.value)"></label><label>Finish<input type="date" value="${x.af||''}" onchange="setA(${i},${j},'af',this.value)"></label>`:`<label>Done on<input type="date" value="${x.as||''}" onchange="setA(${i},${j},'as',this.value)"></label>`;
+ const btn=x.nt?'':`<button class="g" onclick="setA(${i},${j},'plan')" title="Done on the planned date">✓ On plan date</button><button class="g" onclick="setA(${i},${j},'today')">${r.rng?'Finished today':'Done today'}</button>${r.rng&&!x.as?`<button class="g" onclick="setA(${i},${j},'start')">Started today</button>`:''}${(x.as||x.af)?`<button class="x" onclick="setA(${i},${j},'clr')" title="Clear actual date">✕ Clear</button>`:''}`;
+ const rsn=['od','late','ls'].includes(k)?`<select class="rs" onchange="setA(${i},${j},'rs',this.value)"><option value="">Reason for delay…</option>${REASONS.map(z=>`<option ${x.rs==z?'selected':''}>${z}</option>`).join('')}</select>`:'';
+ return `<div class="ir" ${pop?'':`id="ir-${i}-${j}"`} data-k="${k}" data-q="${E((a.n+' '+(x.l||'')).toLowerCase())}" style="--k:${KU[k]}"><div class="t1"><span class="ty" title="${TYN[x.t]||''}">${TYI[x.t]||'•'}</span><span class="lb">${ilab(x)}</span>${schip(k,r.v)}</div><div class="t2">Planned: <b>${pl}</b>${rev}</div><div class="t3">${inp}</div>${btn?`<div class="t3">${btn}</div>`:''}${rsn}</div>`}
+function popHTML(i,j){const a=S.acts[i],x=a.items[j];return `<div class="ph"><b>#${i+1} ${E(a.n)}</b><button class="x" onclick="closePop()" aria-label="Close">✕</button></div>${itemRow(a,i,x,j,SD(),1)}
+ <input class="rmk" placeholder="Remark (optional)" value="${E(x.rm||'')}" onchange="setA(${i},${j},'rm',this.value)">
+ <label class="chk"><input type="checkbox" ${x.nt?'checked':''} onchange="setA(${i},${j},'nt',this.checked)"> Info only: don't monitor this item</label>`}
+function edItem(i,j,e){if(e)e.stopPropagation();PI=[i,j];let p=document.getElementById('pop');if(!p){p=document.createElement('div');p.id='pop';document.body.appendChild(p)}
+ p.innerHTML=popHTML(i,j);p.style.display='block';const w=p.offsetWidth,h=p.offsetHeight,cx=e?e.clientX:innerWidth/2,cy=e?e.clientY:innerHeight/2;
+ p.style.left=Math.max(8,Math.min(innerWidth-w-8,cx+12))+'px';p.style.top=Math.max(8,Math.min(innerHeight-h-8,cy+12))+'px';
+ OPM.add(i);CLM.delete(i);MV();const r=document.getElementById('ir-'+i+'-'+j);if(r){r.scrollIntoView({block:'center'});r.classList.add('flash')}}
+function closePop(){const p=document.getElementById('pop');if(p)p.style.display='none';PI=null}
+addEventListener('mousedown',e=>{const p=document.getElementById('pop');if(p&&p.style.display=='block'&&!p.contains(e.target)&&!e.target.closest('.kc'))closePop()});
+addEventListener('keydown',e=>{if(e.key=='Escape')closePop()});
+function mFlt(){const q=(MF.q||'').toLowerCase(),G={all:null,todo:['od','ls','due','prog'],od:['od'],late:['late','ls'],done:['ok','late'],pend:['pend','due'],ok:['ok'],ls:['ls'],prog:['prog'],due:['due']};
+ document.querySelectorAll('#med .ig').forEach(g=>{let v=0;g.querySelectorAll('.ir').forEach(r=>{const ok=(!q||r.dataset.q.includes(q))&&(!G[MF.k]||G[MF.k].includes(r.dataset.k));r.style.display=ok?'':'none';if(ok)v++});g.style.display=v?'':'none'})}
+
+/* dashboard graph: planned vs actual items over time + status breakdown */
+let CVT=null;
+function tip(e,ht){let t=document.getElementById('tip');if(!t){t=document.createElement('div');t.id='tip';document.body.appendChild(t)}if(!e){t.style.display='none';return}t.innerHTML=ht;t.style.display='block';const w=t.offsetWidth,hh=t.offsetHeight;t.style.left=Math.max(8,Math.min(innerWidth-w-8,e.clientX+14))+'px';t.style.top=(e.clientY+14+hh>innerHeight?e.clientY-hh-10:e.clientY+14)+'px'}
+const dDone=o=>o.r.rng?o.x.af:o.x.as;
+function TREND(M,T,ST){const L=M.L,N=L.length;if(!N)return '<div class="empty">No dated items yet.</div>';
+ let R0=L.reduce((m,o)=>mnd(m,o.r.P0),'9999-12-31'),R1=L.reduce((m,o)=>mxd(m,o.r.P1),'0000-01-01');R1=mxd(R1,T);
+ const n=dd(R1,R0)+1,stp=Math.max(1,Math.ceil(n/140)),ds=[];for(let k=0;k<n;k+=stp)ds.push(addD(R0,k));if(ds[ds.length-1]!=R1)ds.push(R1);if(T>R0&&T<R1&&!ds.includes(T)){ds.push(T);ds.sort()}
+ const P1s=L.map(o=>o.r.P1).sort(),DN=L.map(dDone).filter(Boolean).sort(),cnt=(arr,d)=>{let k=0;for(const v of arr){if(v<=d)k++;else break}return k};
+ const pl=ds.map(d=>cnt(P1s,d)),ac=ds.map(d=>d<=T?cnt(DN,d):null);
+ const VW=400,VH=196,l=34,r=66,t=16,b=22,pw=VW-l-r,ph=VH-t-b,X=d=>l+dd(d,R0)/Math.max(1,n-1)*pw,Y=v=>t+(1-v/N)*ph;
+ let s='';[0,.25,.5,.75,1].forEach(f=>{s+=`<line x1="${l}" x2="${l+pw}" y1="${Y(f*N)}" y2="${Y(f*N)}" class="gy"/><text x="${l-5}" y="${Y(f*N)+3.5}" text-anchor="end" class="ax">${Math.round(f*100)}%</text>`});
+ for(let d=R0.slice(0,8)+'01';d<=R1;d=addD(d.slice(0,8)+'28',5).slice(0,8)+'01'){if(d>=R0)s+=`<line x1="${X(d)}" x2="${X(d)}" y1="${t+ph}" y2="${t+ph+4}" class="gx"/><text x="${X(d)+2}" y="${VH-6}" class="ax">${MON[+d.slice(5,7)-1].slice(0,3)}</text>`}
+ const pts=a=>a.map((v,k)=>v==null?null:X(ds[k]).toFixed(1)+','+Y(v).toFixed(1)).filter(Boolean).join(' ');
+ const ip=ds.filter(d=>d<=T).length-1;
+ s+=`<polyline points="${pts(pl)}" class="lp"/>`;if(ip>=0)s+=`<polyline points="${pts(ac)}" class="la"/>`;
+ if(T>=R0&&T<=R1)s+=`<line x1="${X(T)}" x2="${X(T)}" y1="${t-6}" y2="${t+ph}" class="lsd"/><text x="${X(T)}" y="${t-7}" text-anchor="middle" class="ax">${fmtShort(T)}</text>`;
+ if(ip>=0){const xp=X(ds[ip]),yp=Y(pl[ip]),ya=Y(ac[ip]),gap=pl[ip]-ac[ip];
+  s+=`<circle cx="${xp}" cy="${yp}" r="4" class="dp"/><circle cx="${xp}" cy="${ya}" r="4.5" class="da"/>`;
+  if(gap>0)s+=`<line x1="${xp+7}" x2="${xp+7}" y1="${yp}" y2="${ya}" class="gapl"/>`;
+  const lx=Math.min(xp+12,VW-r+6),sep=Math.abs(ya-yp)<13;
+  s+=`<text x="${lx}" y="${sep?yp-3:yp+4}" class="dl1">Plan ${pl[ip]}</text><text x="${lx}" y="${sep?ya+11:ya+4}" class="dl2">Done ${ac[ip]}</text>`}
+ if(!ST)s+=`<line id="tch" x1="0" x2="0" y1="${t}" y2="${t+ph}" class="ch" style="display:none"/><rect x="${l}" y="${t}" width="${pw}" height="${ph}" fill="transparent" onmousemove="tH(event)" onmouseleave="tL()"/>`;
+ if(!ST)CVT={ds,pl,ac,X,VW,N};
+ const gap=ip>=0?pl[ip]-ac[ip]:0;
+ return `<div class="lgd3"><span><i style="background:var(--s1)"></i>Planned (cumulative)</span><span><i style="background:var(--s2)"></i>Actually done</span><span><i class="sd"></i>Status date</span></div>
+ <svg viewBox="0 0 ${VW} ${VH}" class="scv" role="img" aria-label="Items planned versus done over time. At the status date ${ip>=0?pl[ip]:0} planned and ${ip>=0?ac[ip]:0} done.">${s}</svg>
+ <div class="gapt">${ip<0?'Status date is before the plan starts.':gap>0?`<b class="vp">${gap} item${gap>1?'s':''} behind plan</b> at ${fdt(T)}`:gap<0?`<b class="vn">${-gap} item${gap<-1?'s':''} ahead of plan</b>`:'<b class="vn">Exactly on plan</b>'}</div>`}
+function tH(e){if(!CVT)return;const r=e.currentTarget.ownerSVGElement.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*CVT.VW;let k=0,best=1e9;CVT.ds.forEach((d,i)=>{const q=Math.abs(CVT.X(d)-x);if(q<best){best=q;k=i}});
+ const c=document.getElementById('tch');c.setAttribute('x1',CVT.X(CVT.ds[k]));c.setAttribute('x2',CVT.X(CVT.ds[k]));c.style.display='';
+ const p=CVT.pl[k],a=CVT.ac[k];tip(e,`<b>${fdt(CVT.ds[k])}</b><br><i class="sw" style="background:var(--s1)"></i>Planned ${p} (${Math.round(p/CVT.N*100)}%)${a!=null?`<br><i class="sw" style="background:var(--s2)"></i>Done ${a} (${Math.round(a/CVT.N*100)}%)`:''}`)}
+function tL(){const c=document.getElementById('tch');if(c)c.style.display='none';tip()}
+function SBAR(M){const N=M.L.length||1,ord=['ok','late','od','ls','prog','due','pend'];
+ return `<div class="sbar" role="img" aria-label="Status breakdown">${ord.map(k=>M.c[k]?`<i style="flex:${M.c[k]};background:${KU[k]}" onmousemove="tip(event,'<b>${KL[k]}</b><br>${M.c[k]} items · ${Math.round(M.c[k]/N*100)}%')" onmouseleave="tip()"></i>`:'').join('')}</div>
+ <div class="sleg">${ord.map(k=>`<button class="${MF.k==k?'on':''}" onclick="MF.k=MF.k=='${k}'?'all':'${k}';MV()" title="Show only ${KL[k]}"><i style="background:${KU[k]}"></i><span>${KI[k]} ${KL[k]}</span><b>${M.c[k]}</b><em>${Math.round(M.c[k]/N*100)}%</em></button>`).join('')}</div>`}
+function MV(){const el=document.getElementById('med');if(!el)return;const st=el.scrollTop,T=SD(),M=ISUM(T),c=M.c,bl=S.bl||{r:'—',d:''};
+ const F=[['todo','Needs action',c.od+c.ls+c.due+c.prog],['od','Overdue',c.od],['late','Late',c.late+c.ls],['done','Done',M.done],['pend','Upcoming',c.pend+c.due],['all','All',M.L.length]];
+ el.innerHTML=`<h1><span class="lg">▦</span><span class="ttl">Monitoring<small>Planned vs actual · every item</small></span><span class="acts"><button class="ib" title="Toggle light / dark" onclick="theme()">◐</button><button class="pvb" onclick="window.print()">🖨 Print</button></span></h1>
+ <nav class="seg2" aria-label="View"><button onclick="setView(0)">📄 Plan sheet</button><button class="on" aria-current="page">📊 Monitoring</button></nav>
+ <div class="hero"><div class="hi"><small>STATUS AS OF ${fdt(T).toUpperCase()}</small><b>${E(S.title)}</b><span>Baseline ${E(bl.r)} · ${fdt(bl.d)}</span><br><em class="hb2" style="--s:${HL[M.h][1]}">${HL[M.h][0]} · on-time ${M.adh}%</em></div><div class="ring" style="--p:${M.pc}"><span>${M.pc}%</span><i>items done</i></div></div>
+ <div class="kpi"><div style="--k:#4f6bed"><em>📌</em><b>${M.due}</b>Due by date</div><div style="--k:#0ca30c"><em>✅</em><b>${c.ok}</b>On time</div><div style="--k:#e0752d"><em>🕒</em><b>${c.late}</b>Done late</div><div style="--k:${c.od?'#d03b3b':'#8a94a6'}"><em>⛔</em><b>${c.od}</b>Overdue</div></div>
+ <div class="card2 gcard"><div class="ct">Current status · ${M.L.length} items</div>
+  <div class="hrow"><span class="hp" style="--s:${HL[M.h][1]}"><em>${HL[M.h][2]}</em>${HL[M.h][0]}</span><span class="mut">${M.why.join(' · ')}</span></div>
+  ${TREND(M,T)}
+  <div class="ct" style="margin-top:12px">Status breakdown</div>${SBAR(M)}</div>
+ <div class="card2"><div class="row"><div><label>Status date</label><input type="date" value="${S.sd||''}" onchange="S.sd=this.value;sv();MV();RPM()"></div><button class="g s" onclick="S.sd='';sv();MV();RPM()">Today</button></div><small>${S.sd?'Fixed date':'Using today'}: ${fdt(T)}</small>
+  <label>Compare actual dates against</label><select onchange="S.cmp=this.value;sv();MV();RPM()">${OP({base:'Baseline (frozen plan '+bl.r+')',cur:'Current plan dates'},S.cmp=='cur'?'cur':'base')}</select>
+  <div class="top"><button onclick="mFill()">⚡ Mark everything due as done on plan</button></div>
+  <small>Then change only the items that were late. Or click any triangle, arrow, box or text on the sheet to update it.</small>
+  <div class="top"><button class="g" onclick="mCsv()">⬇ Export CSV</button><select onchange="mBase(this.value);this.value=''"><option value="">Baseline options…</option><option value="all">Save current plan as new baseline</option><option value="new">Baseline new items only</option></select><button class="x" onclick="mClear()">Clear all actuals</button></div></div>
+ ${M.noAct?`<div class="inf">How to update: 1. Pick the status date. 2. Click <b>⚡ Mark everything due as done on plan</b>. 3. For items that slipped, set the real date and a reason. Items keep their planned position on the sheet; colour shows the result and a ◆ marks the actual date.</div>`:''}
+ <div class="fch" role="group" aria-label="Filter items">${F.map(f=>`<button class="${MF.k==f[0]?'on':''}" onclick="MF.k='${f[0]}';MV()">${f[1]} <b>${f[2]}</b></button>`).join('')}</div>
+ <input class="srch" placeholder="🔍 Search activity or item" value="${E(MF.q)}" oninput="MF.q=this.value;mFlt()">
+ ${S.acts.map((a,i)=>{const R=actR(a,T),its=a.items.map((x,j)=>itemRow(a,i,x,j,T)).join('');if(!its)return '';const op=CLM.has(i)?false:OPM.has(i)||['od','ls','due','prog'].includes(R.k)||MF.k!='todo';
+  return `<details class="card ig" ${op?'open':''} ontoggle="this.open?(OPM.add(${i}),CLM.delete(${i})):(CLM.add(${i}),OPM.delete(${i}))"><summary><span>#${i+1} ${E(a.n)}</span><span class="chip" style="--s:${KU[R.k]}"><em>${KI[R.k]}</em>${R.dn}/${R.n}</span></summary>${its}</details>`}).join('')}`;
+ el.scrollTop=st;mFlt()}
+
+mig();
+try{const t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}
+RE();RP();
+let Z=1,auto=true;
+function setZ(z,a){auto=!!a;Z=Math.max(.3,Math.min(2,z));sh.style.zoom=Z;document.getElementById('zl').textContent=Math.round(Z*100)+'%'}
+function full(on){document.body.classList.toggle('full',on);fit()}
+function fit(){const f=document.body.classList.contains('full');let z=(pv.clientWidth-28)/SW;if(f){const zz=sh.style.zoom;sh.style.zoom=1;const H=sh.offsetHeight;sh.style.zoom=zz;z=Math.min(z,(pv.clientHeight-64)/H)}setZ(Math.min(f?2:1,z),true)}
+addEventListener('resize',()=>{if(document.body.classList.contains('mon')){if(autoM)fitM()}else if(auto)fit()});
+addEventListener('beforeprint',()=>{if(document.body.classList.contains('mon')){closePop();const ms=document.getElementById('ms');ms.style.zoom=1;const H=ms.offsetHeight;ms.style.zoom=Math.min(1542/SWM,1077/H);return}sh.style.zoom=1;const H=sh.offsetHeight;sh.style.zoom=Math.min(1542/SW,1077/H)});
+addEventListener('afterprint',()=>{if(document.body.classList.contains('mon')){setZM(ZM,autoM);return}setZ(Z,auto)});
+window.fitCb=()=>{if(auto)fit()};
+fit();
+try{if(localStorage.getItem('view')=='1')setView(1)}catch(e){}
+</script></body></html>
